@@ -3,8 +3,8 @@
 **/
 
 
-function testStreamOn(data){
-  var secretary = require('../secretary.js').secretary;
+function testStreamOn(data){//twitter.stream.on('data'みたいな
+  var secretary = new require('../secretary.js').secretary;
   secretary.setMode('hisyotan');
   if(!secretary.setEntry(data)){
     console.log('Cannot setEntry');
@@ -18,7 +18,8 @@ var sample = {
   created_at: 'Wed Jan 09 11:37:45 +0000 2013',
   id: 288972828353646600,
   id_str: '288972828353646592',
-  text: '@hisyotan とりあえずドライバーつくりたいから返事してくr',
+  //text: '@hisyotan とりあえずドライバーつくりたいから返事してくr',
+  text: '退勤とりあえずドライバーつくりたいから返事してくr',
   source: '<a href="http://itunes.apple.com/us/app/twitter/id409789998?mt=12" rel="nofollow">Twitter for Mac</a>',
   truncated: false,
   in_reply_to_status_id: null,

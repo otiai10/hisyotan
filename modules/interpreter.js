@@ -13,6 +13,7 @@ var MESS_TYPE_REMOVE_FAILED = 11;
 var MESS_TYPE_OTHERS        = 20;
 //---[agressive reply]---
 var MESS_TYPE_TAIKIN        = 51;
+var MESS_TYPE_OHAYO         = 52;
 
 var mongoose    = require('./mongoose.js').mngs;
 
@@ -90,11 +91,11 @@ exports.interpreter = {
                 });
             }
         } else { // リプライじゃないもの。積極的返信
-            if (text.match('たいきん')) {
+            if (text.match(/たいきん|退勤/) && in_reply_to == null) {
                 callback(MESS_TYPE_TAIKIN );
             }
-            if (text.match('おはよう') && in_reply_to == null) {
-                callback(MESS_TYPE_TAIKIN );//暫定的にTAIKIN
+            if (text.match(/おはよう|むくり|起床/) && in_reply_to == null) {
+                callback(MESS_TYPE_OHAYO );
             }
         }
     },

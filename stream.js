@@ -16,6 +16,7 @@ var MESS_TYPE_REMOVE_FAILED = 11;
 var MESS_TYPE_OTHERS        = 20;
 //---[agressive reply]---
 var MESS_TYPE_TAIKIN        = 51;
+var MESS_TYPE_OHAYO         = 52;
 
 /********* prepare for twitter bot ********/
 var conf = require('./conf_my.js').conf;
@@ -44,7 +45,7 @@ hisyotan.stream('user',function(stream){
         if(!wantToReply(data)) return;
         // ログを残しておく
         console.log(util.getDateLog() + '[refer] ')// + data.text)
-
+        console.log(util.getDateLog() + '[status_id] ' + data.id);
         _name = data.user.screen_name;
         _now  = data.created_at;
         _rep  = {
@@ -124,6 +125,8 @@ function reply(mess_type, params){
         case MESS_TYPE_TAIKIN:
             mess = '@' + _name + ' おしごとお疲れ様です！' + getRandomTAIKIN();
             break;
+        case MESS_TYPE_OHAYO:
+            mess = '@' + _name + ' おはようございます！今日も１日力を抜いてがんばりましょうね！！';
         default:
             mess = '';
         }

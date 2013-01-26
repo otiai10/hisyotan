@@ -1,21 +1,53 @@
 /**
  * hisyotanの実体
 **/
-//-----[const]-----
-var PROJ_ROOT = '/home/hiromu/node/projects/hisyotan';
-var SRC_PATH  = PROJ_ROOT + '/src';
-//-----------------
 
-var fs = require('fs'),
-  mngs = require('./modules/mongoose.js').mngs;
+//-----[module]--------------------------------------
+var fs      = require('fs'),
+  util      = require('./modules/util.js').util,
+  mngs      = require('./modules/mongoose.js').mngs,
+  procedure = require('./procedure.js'),
+  c         = require('./modules/constants').constants;
+//---------------------------------------------------
+
+//-----[const]---------------------------------------
+var SRC_PATH  = __dirname + '/src';
+//---------------------------------------------------
+
+/********* prepare for twitter bot ********/
+var conf = require('./conf_my.js').conf;
+var twitter = require('twitter');
+var bot = new twitter({
+    consumer_key        : conf.consumer_key,
+    consumer_secret     : conf.consumer_secret,
+    access_token_key    : conf.access_token,
+    access_token_secret : conf.access_token_secret,
+});
+/******************************************/
 
 exports.secretary = {
 
   name     : '', // この秘書の名前
   serif    : {}, // この秘書のセリフ集
+  triggers : {}, // この秘書に能動的に反応させたいトリガーワード
   entry    : {}, // 受信したツイート
   referer  : {}, // 発言者情報
   master   : {}, // このスレッドで相手するご主人様情報
+  _pattern :  0,
+  replytext: '',
+
+  main : function(is_debug){
+    this.setReferer(this.entry.user);
+    var self = this;
+    self.checkMaster(self.referer.screen_name, function(master){
+      if(master){
+        self.setMaster(master);
+      }else{
+        self.referer.is_new_commer = true;
+      }
+      self.reply();
+    });
+  },
 
   // setName
   setName : function(secretaryName){
@@ -48,8 +80,10 @@ exports.secretary = {
   // setMode
   setMode : function(mode){
     this.setName(mode);
-    var path = SRC_PATH +'/'+ String(mode) + '.json';
-    this.serif = getJsonFromFile(path);
+    var serifpath   = SRC_PATH +'/'+ String(mode) +'/serif.json';
+    var triggerpath = SRC_PATH +'/'+ String(mode)+'/triggers.json';
+    this.serif      = getJsonFromFile(serifpath);
+    this.triggers   = getJsonFromFile(triggerpath);
   },
 
   // setReferer
@@ -65,61 +99,42 @@ exports.secretary = {
   //---[[[async]]]---
   // 登録されているご主人様情報を返す
   checkMaster : function(masterName, f){
-    // mngsに問い合わせる 
-    mngs.findMasterByName(masterName,f(data));    
+    // mngsに問い合わせる
+    mngs.findMasterByName(masterName,function(res){f(res)});    
   },
 
   // 発言を解釈し、返信へdispatchする
-  interpret : function(entry){
+  reply : function(){
+
     if(this.referer.is_new_commer){
       if((this.entry.in_reply_to_screen_name == this.name) && (this.entry.text.match('--init'))){
-        reply.firstGreet();
+        this._pattern = c.SAMPLE_PATTERN_NOT_USED;
       }
-      return 0;
+      return 0;// do nothing
+    }else{
+      var is_mention = (this.entry.text.match('@'+this.name))? true:false;
+      this._pattern  = procedure.interpret(this.entry.text, is_mention, this.triggers); 
     }
 
-  },
-
-  // 返信する
-  reply : {
-
-    // デイリーなリマインド
-    dailyRemind : function(){
-
-    },
-
-    // ウィークリーなリマインド
-    weeklyRemind : function(){
-
-    },
-
-    // todoリストを提示する
-    showTodos : function(){
-
-    },
-
-    // 最初の挨拶
-    firstGreet : function(){
-      console.log(this.referer);
-    },
-
-  },
-
-  main : function(is_debug){
-    this.setReferer(this.entry.user);
-    var mstr;
-    this.checkMaster(this.referer.screen_name,function(master){
-      if(master){
-        console.log(this);
-        this.setMaster(master);
-      }else{
-        this.referer.is_new_commer = true;
-      }
-      this.interpret();
+    var self = this;
+    procedure.generateText(self._pattern, self.entry, self.serif, function(res){
+      self.replytext = res;
+      self.send();
     });
-    //}).bind(this);とか
-    //}).call(this);とか
-    //}).apply(this);とかしてみたけど
+
+  },
+
+  send : function(){
+    // prepare
+    text = '@' + this.master.name + ' ' + this.replytext + ' ' + util.getTimeHash();
+    params = { in_reply_to_status_id: this.entry.id_str, };
+    // update status
+    bot.updateStatus( text, params, function(res){});
+  },
+
+
+  setPattern: function(pattern){
+    this._pattern = pattern;
   },
 
 }
@@ -128,3 +143,4 @@ function getJsonFromFile(filepath){
   data = fs.readFileSync(filepath, 'utf8');
   return JSON.parse(data);
 }
+
