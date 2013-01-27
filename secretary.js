@@ -117,7 +117,14 @@ exports.secretary = {
     }
 
     var self = this;
-    procedure.generateText(self._pattern, self.entry, self.serif, function(res){
+    var params = {
+      "entry"  : self.entry,
+      "master" : self.master
+    };
+    //procedure.generateText(self._pattern, params, self.serif, function(res){
+    // TODO: test----------->>>>
+    procedure.generateText(c.REP_DONE_TASK, params, self.serif, function(res){
+    //<<<<----------------------
       self.replytext = res;
       self.send();
     });
@@ -127,7 +134,7 @@ exports.secretary = {
   send : function(){
     // prepare
     text = '@' + this.master.name + ' ' + this.replytext + ' ' + util.getTimeHash();
-    params = { in_reply_to_status_id: this.entry.id_str, };
+    var params = { in_reply_to_status_id: this.entry.id_str, };
     // update status
     bot.updateStatus( text, params, function(res){});
   },
