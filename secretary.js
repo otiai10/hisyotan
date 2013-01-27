@@ -6,7 +6,8 @@
 var fs      = require('fs'),
   util      = require('./modules/util.js').util,
   mngs      = require('./modules/mongoose.js').mngs,
-  procedure = require('./procedure.js'),
+  generate  = require('./generater.js').generateText,
+  interpret = require('./interpreter.js').interpretText,
   c         = require('./modules/constants').constants;
 //---------------------------------------------------
 
@@ -113,21 +114,23 @@ exports.secretary = {
       return 0;// do nothing
     }else{
       var is_mention = (this.entry.text.match('@'+this.name))? true:false;
-      this._pattern  = procedure.interpret(this.entry.text, is_mention, this.triggers); 
+      this._pattern  = interpret(this.entry.text, is_mention, this.name, this.triggers); 
     }
 
-    var self = this;
-    var params = {
-      "entry"  : self.entry,
-      "master" : self.master
-    };
-    //procedure.generateText(self._pattern, params, self.serif, function(res){
-    // TODO: test----------->>>>
-    procedure.generateText(c.REP_DONE_TASK, params, self.serif, function(res){
-    //<<<<----------------------
-      self.replytext = res;
-      self.send();
-    });
+    //-- LOG --
+    console.log(util.d() + self.entry.text + ' >> ' + self._pattern);
+
+    if(this._pattern != c.IGNORE){
+      var self = this;
+      var params = {
+        "entry"  : self.entry,
+        "master" : self.master
+      };
+      generate(self._pattern, params, self.serif, function(res){
+        self.replytext = res;
+        self.send();
+      });
+    }
 
   },
 

@@ -78,28 +78,6 @@ exports.generateText = function(pattern, params, serif, cb){
   }
 };
 
-exports.interpret = function(text, is_mention, triggers){
-
-  return c.REP_LIST_TASK;
-
-  if(!is_mention){
-    return getTriggerPattern(text, triggers);
-  }
-
-
-  return c.SAMPLE_PATTERN_NOT_USED;
-
-}; 
-
-/*private*/function getTriggerPattern(text, triggers){
-  for(var i in triggers){
-    if(text.match(i)){
-      return triggers[i];
-    }
-  }
-  return c.IGNORE;
-}
-
 /*private*/function getSerif(serifhash, params){
   if(params == void 0){
     params = [];
