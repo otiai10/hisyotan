@@ -13,7 +13,7 @@ exports.generateText = function(pattern, params, serif, cb){
   s = serif;
 
   switch(pattern){
-    //========== REP_LIST_TASK
+    //========== REP_LIST_TASK ==================================
     case c.REP_LIST_TASK:
       // 現在のタスクを全部取得する、で、callbackでcb();する
       getTaskListByName(params.master.name, function(tasks){
@@ -25,7 +25,7 @@ exports.generateText = function(pattern, params, serif, cb){
         }
       });
       break;
-    //========== REP_REG_TASK
+    //========== REP_REG_TASK ==================================
     case c.REP_REG_TASK:
       // 名前に対して、タスクを付加する
       var new_tasks = extractTasks(params.entry.text);
@@ -34,7 +34,7 @@ exports.generateText = function(pattern, params, serif, cb){
         cb(getSerif('REP_REG_TASK', [mess]));
       });
       break;
-    //========== REP_DONE_TASK
+    //========== REP_DONE_TASK ================================
     case c.REP_DONE_TASK:
       // 名前に対して、タスクを削除する
       var ref_tasks = extractTasks(params.entry.text);
@@ -49,21 +49,28 @@ exports.generateText = function(pattern, params, serif, cb){
         }
       });
       break;
-    //========== TRIGGER_TAIKIN
+    //========== TRIGGER_TAIKIN ===============================
     case c.TRIGGER_TAIKIN:
-      var params = ["パラム0", "パラム1", "パラム2", "パラム3"];
-      cb(getSerif('TRIGGER_TAIKIN', params));
+      cb(getSerif('TRIGGER_TAIKIN'));
       break;
-    //========== TRIGGER_OHAYO
+    //========== TRIGGER_OHAYO ================================
     case c.TRIGGER_OHAYO:
       cb(getSerif('TRIGGER_OHAYO'));
       break;
-    //========== TRIGGER_OYASUMI
+    //========== TRIGGER_OYASUMI ==============================
     case c.TRIGGER_OYASUMI:
       cb(getSerif('TRIGGER_OYASUMI'));
       break;
-    //========== REMIND_WEEKLY
+    //========== REMIND_WEEKLY ================================
     case c.REMIND_WEEKLY:
+      getTaskListByName(params.master.name, function(tasks){
+        if(tasks.length == 0){
+          cb(getSerif('REP_LIST_VACANT'));
+        }else{
+          var mess = joinTasksToText(tasks);
+          cb(getSerif('REMIND_WEEKLY', [mess]));
+        }
+      });
       break;
     case c.IGNORE:
     default:
@@ -84,7 +91,7 @@ exports.interpret = function(text, is_mention, triggers){
 
 }; 
 
-function getTriggerPattern(text, triggers){
+/*private*/function getTriggerPattern(text, triggers){
   for(var i in triggers){
     if(text.match(i)){
       return triggers[i];
@@ -93,7 +100,7 @@ function getTriggerPattern(text, triggers){
   return c.IGNORE;
 }
 
-function getSerif(serifhash, params){
+/*private*/function getSerif(serifhash, params){
   if(params == void 0){
     params = [];
   }
@@ -107,7 +114,7 @@ function getSerif(serifhash, params){
   return str;
 }
 
-function getTaskListByName(masterName,cb){
+/*private*/function getTaskListByName(masterName,cb){
   mngs.findMasterByName(masterName, function(res){
     cb(res.tasks);
   });
