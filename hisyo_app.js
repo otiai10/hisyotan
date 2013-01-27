@@ -25,8 +25,6 @@ hisyotan.stream('user',function(stream){
   secretary.setMode('hisyotan');
 
   stream.on('data',function(data){
-    console.log('----------------------');
-    console.log(data);
     if(!secretary.setEntry(data)){
       return 0;
     }
