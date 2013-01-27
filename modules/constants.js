@@ -1,9 +1,9 @@
 exports.constants = {
 
   'IGNORE'                  : -1,
-  'SAMPLE_PATTERN_NOT_USED' :  0,
 
   /* reply pattern */
+  'REP_HELP'                :  0,
   'REP_LIST_TASK'           :  1,
   'REP_REG_TASK'            :  2,
   'REP_DONE_TASK'           :  3,
@@ -18,6 +18,9 @@ exports.constants = {
   'TRIGGER_TSUKARETA'       :1004,
 
   /* FLAG */
+  'FLAG_HELP'               : '--help',
   'FLAG_ADD'                : '/&',
   'FLAG_DONE'               : '--done',
+  'FLAG_INIT'               : '--init',
+  'WORD_INIT'               : 'よろしくね',
 };
