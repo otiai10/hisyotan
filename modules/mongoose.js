@@ -21,7 +21,6 @@ exports.mngs = {
      * @params name String
      * @return master Object, is_initial Boolean
     **/
-    // TODO: name 'findMasterByName
     findMasterByName : function(name, cb){
       Master.findOne({name:name},function(err,res){
         cb(res);

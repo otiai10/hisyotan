@@ -17,4 +17,7 @@ exports.constants = {
   'TRIGGER_OYASUMI'         :1003,
   'TRIGGER_TSUKARETA'       :1004,
 
+  /* FLAG */
+  'FLAG_ADD'                : '/&',
+  'FLAG_DONE'               : '--done',
 };
