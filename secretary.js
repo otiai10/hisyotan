@@ -15,6 +15,7 @@ var fs      = require('fs'),
 var SRC_PATH  = __dirname + '/src';
 //---------------------------------------------------
 
+// TODO: twitterモジュール部分をまとめる
 /********* prepare for twitter bot ********/
 var conf = require('./conf_my.js').conf;
 var twitter = require('twitter');
@@ -118,7 +119,7 @@ exports.secretary = {
     }
 
     //-- LOG --
-    console.log(util.d() + self.entry.text + ' >> ' + self._pattern);
+    console.log(util.d() + this._pattern + ' <<< ' +this.entry.text );
 
     if(this._pattern != c.IGNORE){
       var self = this;
