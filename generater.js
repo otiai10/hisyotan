@@ -49,6 +49,16 @@ exports.generateText = function(pattern, params, serif, cb){
         }
       });
       break;
+    //========== REP_UPDATE_DAILY ================================
+      // TODO: imple
+    //========== REP_ENABLE_DAILY ================================
+      // TODO: imple
+    //========== REP_DISABLE_DAILY ================================
+      // TODO: imple
+    //========== REP_ENABLE_WEEKLY ================================
+      // TODO: imple
+    //========== REP_DISABLE_WEEKLY ================================
+      // TODO: imple
     //========== TRIGGER_TAIKIN ===============================
     case c.TRIGGER_TAIKIN:
       cb(getSerif('TRIGGER_TAIKIN'));
@@ -63,13 +73,8 @@ exports.generateText = function(pattern, params, serif, cb){
       break;
     //========== REMIND_DAILY =================================
     case c.REMIND_DAILY:
-      var mess = joinTasksToText(params.master.tasks);
-      if(params.master.tasks.length == 0){
-        cb(getSerif('REP_LIST_VACANT'));
-      }else{
-        var mess = joinTasksToText(tasks);
-        cb(getSerif('REMIND_DAILY', [mess]));
-      }
+      var mess = params.master.daily;
+      cb(getSerif('REMIND_DAILY', [mess]));
       break;
     //========== REMIND_WEEKLY ================================
     case c.REMIND_WEEKLY:
@@ -77,7 +82,6 @@ exports.generateText = function(pattern, params, serif, cb){
       if(params.master.tasks.length == 0){
         cb(getSerif('REP_LIST_VACANT'));
       }else{
-        var mess = joinTasksToText(tasks);
         cb(getSerif('REMIND_WEEKLY', [mess]));
       }
       break;
