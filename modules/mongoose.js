@@ -40,12 +40,12 @@ exports.mngs = {
         });
     },
 
-    findWeeklyMasters : function(callback){
-        Master.find().where('do_weekly').equals(true).exec(callback);
-    },
-
     findDailyMasters : function(callback){
         Master.find().where('do_daily').equals(true).exec(callback);
+    },
+
+    findWeeklyMasters : function(callback){
+        Master.find().where('do_weekly').equals(true).exec(callback);
     },
 
     // debug
