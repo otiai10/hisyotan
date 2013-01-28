@@ -9,7 +9,8 @@ exports.constants = {
   'REP_DONE_TASK'           :  3,
 
   /* remind pattern */
-  'REMIND_WEEKLY'           :101,
+  'REMIND_DAILY'            :101,
+  'REMIND_WEEKLY'           :102,
 
   /* trigger pattern */
   'TRIGGER_TAIKIN'          :1001,
@@ -23,4 +24,8 @@ exports.constants = {
   'FLAG_DONE'               : '--done',
   'FLAG_INIT'               : '--init',
   'WORD_INIT'               : 'よろしくね',
+
+  /* CLI_ARG */
+  'CLI_ARG_DAILY'           : '-d',
+  'CLI_ARG_WEEKLY'          : '-w',
 };

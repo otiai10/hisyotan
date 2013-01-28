@@ -20,7 +20,7 @@ var hisyotan = new twitter({
 var secretary = require('./secretary.js').secretary;
 
 hisyotan.stream('user',function(stream){
-  console.log(util.d() + 'WAKE UP');
+  console.log(util.d() + ' 秘書たんは起床しました!!');
 
   secretary.setMode('hisyotan');
 

@@ -1,5 +1,5 @@
 /**
- * procedure
+ * generater
 **/
 
 var c = require('./modules/constants').constants,
@@ -61,20 +61,29 @@ exports.generateText = function(pattern, params, serif, cb){
     case c.TRIGGER_OYASUMI:
       cb(getSerif('TRIGGER_OYASUMI'));
       break;
+    //========== REMIND_DAILY =================================
+    case c.REMIND_DAILY:
+      var mess = joinTasksToText(params.master.tasks);
+      if(params.master.tasks.length == 0){
+        cb(getSerif('REP_LIST_VACANT'));
+      }else{
+        var mess = joinTasksToText(tasks);
+        cb(getSerif('REMIND_DAILY', [mess]));
+      }
+      break;
     //========== REMIND_WEEKLY ================================
     case c.REMIND_WEEKLY:
-      getTaskListByName(params.master.name, function(tasks){
-        if(tasks.length == 0){
-          cb(getSerif('REP_LIST_VACANT'));
-        }else{
-          var mess = joinTasksToText(tasks);
-          cb(getSerif('REMIND_WEEKLY', [mess]));
-        }
-      });
+      var mess = joinTasksToText(params.master.tasks);
+      if(params.master.tasks.length == 0){
+        cb(getSerif('REP_LIST_VACANT'));
+      }else{
+        var mess = joinTasksToText(tasks);
+        cb(getSerif('REMIND_WEEKLY', [mess]));
+      }
       break;
     case c.IGNORE:
     default:
-      // break do nothing
+      // do nothing
   }
 };
 
