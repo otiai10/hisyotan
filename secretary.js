@@ -39,6 +39,7 @@ exports.secretary = {
   replytext: '',
 
   main : function(is_debug){
+
     this.setReferer(this.entry.user);
     var self = this;
     self.checkMaster(self.referer.screen_name, function(master){
@@ -110,9 +111,8 @@ exports.secretary = {
 
     if(this.referer.is_new_commer){
       if((this.entry.in_reply_to_screen_name == this.name) && (this.entry.text.match('--init'))){
-        this._pattern = c.SAMPLE_PATTERN_NOT_USED;
+        this._pattern = c.IGNORE;
       }
-      return 0;// do nothing
     }else{
       var is_mention = (this.entry.text.match('@'+this.name))? true:false;
       this._pattern  = interpret(this.entry.text, is_mention, this.name, this.triggers); 
@@ -154,4 +154,3 @@ function getJsonFromFile(filepath){
   data = fs.readFileSync(filepath, 'utf8');
   return JSON.parse(data);
 }
-

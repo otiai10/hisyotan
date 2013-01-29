@@ -7,6 +7,7 @@
 var generate  = require('./generater').generateText,
     mngs      = require('./modules/mongoose').mngs,
     c         = require('./modules/constants').constants,
+    u         = require('./modules/util').util,
     argv      = require('argv'),
     secretary = new require('./secretary').secretary;
 
@@ -55,9 +56,9 @@ function sendRemind(master, pattern){
   };
   generate(pattern, params, secretary.serif, function(mess){
     // prepare
-    text = '@' + master.name + ' ' + mess;
+    text = '@' + master.name + ' ' + mess + u.getTimeHash();
     // update status
-    bot.updateStatus( text, function(res){});
+    bot.updateStatus( text, function(res){console.log(res);});
   });
 }
 

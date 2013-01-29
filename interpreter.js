@@ -24,7 +24,7 @@ exports.interpretText = function(text, is_mention, secr_name, triggers){
     return c.REP_UPDATE_DAILY;
   }
   if(text.match(c.FLAG_ENABLE_DAILY)){
-    return c.REP_ENEABLE_DAILY;
+    return c.REP_ENABLE_DAILY;
   }
   if(text.match(c.FLAG_DISABLE_DAILY)){
     return c.REP_DISABLE_DAILY;
