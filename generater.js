@@ -2,8 +2,9 @@
  * generater
 **/
 
+//TODO: プロパティは全部直接exportsすれば、ここで変な語尾はいらない
 var c = require('./modules/constants').constants,
- mngs = require('./modules/mongoose.js').mngs;
+ mngs = require('./modules/mongoose').mngs; //TODO: procedure哲学により、ここにmngsを書かない
 
 var s = {};
 
@@ -50,10 +51,34 @@ exports.generateText = function(pattern, params, serif, cb){
       });
       break;
     //========== REP_UPDATE_DAILY ================================
+    case c.REP_UPDATE_DAILY:
+      var new_daily_content = joinTasksToText(extractTasks(params.entry.text), {"cut_tail":true});
+      updateDailyRemindContent(params.master, new_daily_content, function(response){
+        if(response.accepted){
+          cb(getSerif('REP_UPDATE_DAILY', [new_daily_content]));
+        }else{
+          cb(getSerif('REP_ERROR', [new_daily_content]));
+        }
+      });
+      break;
       // TODO: imple
     //========== REP_ENABLE_DAILY ================================
+    case c.REP_ENABLE_DAILY:
+      switchDailyRemind(params.master, true, function(response){
+        if(response){
+          cb(getSerif('REP_ENABLE_DAILY'));
+        }
+      });
+      break;
       // TODO: imple
     //========== REP_DISABLE_DAILY ================================
+    case c.REP_DISABLE_DAILY:
+      switchDailyRemind(params.master, false, function(response){
+        if(response){
+          cb(getSerif('REP_DISABLE_DAILY'));
+        }
+      });
+      break;
       // TODO: imple
     //========== REP_ENABLE_WEEKLY ================================
       // TODO: imple
@@ -120,8 +145,17 @@ exports.generateText = function(pattern, params, serif, cb){
   });
 }
 
-/*private*/function removeTasksFromMasterName(master,ref_tasks,cb){
+/**
+ * TODO: ここのロジック部分って、procedureとして分離したほうがよくない？
+**/
 
+/*private*/function switchDailyRemind(master, do_daily, cb){
+  master.do_daily = do_daily; 
+  mngs.saveMaster(master, function(is_success){
+      cb(is_success);
+  });
+}
+/*private*/function removeTasksFromMasterName(master,ref_tasks,cb){
   // TODO: ここの処理かっこわるくないか？
   var current_tasks  = master.tasks;
   var new_tasks      = [];
@@ -140,15 +174,14 @@ exports.generateText = function(pattern, params, serif, cb){
   // new_tasks決定する
   for(var i=0; i<current_tasks.length; i++){
     if(in_array(current_tasks[i], done_tasks)){
-      console.log(current_tasks[i], 'doneなので何もしない');
+      //console.log(current_tasks[i], 'doneなので何もしない');
     }else{
-      console.log(current_tasks[i], 'プッシする');
+      //console.log(current_tasks[i], 'プッシする');
       new_tasks.push(current_tasks[i]);
     }
   }
 
   // master情報の上塗り
-  console.log('新しいタスクがなくなってるぞ？',new_tasks);
   master.tasks = new_tasks;
 
   mngs.saveMaster(master, function(is_success){
@@ -164,10 +197,37 @@ exports.generateText = function(pattern, params, serif, cb){
   });
 }
 
-/*private*/function joinTasksToText(tasks){
+/*private*/function updateDailyRemindContent(master, new_daily_content, cb){
+  var response = {
+    'accepted'          : false,
+    'new_daily_content' : new_daily_content,
+  };
+  if(new_daily_content.length == 0){
+    console.log('new_daily_contentが空文字列なので取り合わない。いや、ちゃんとinvalidを伝えた方がいいだろう', new_daily_content);
+    cb(response);
+  }else{
+    master.daily = new_daily_content;
+    mngs.saveMaster(master, function(is_success){
+      if(is_success){
+        response.accepted = true;
+        cb(response);
+      }else{
+        cb(response);
+      }
+    });
+  }
+}
+
+/*private*/function joinTasksToText(tasks, opt){
+  if(opt == void 0){
+    opt = {};
+  }
   var mess = '';
   for(var i=0; i<tasks.length; i++){
     mess += tasks[i] + s.MISC_TASK_DELIMITER;
+  }
+  if(opt.cut_tail){
+    mess = mess.replace(/.$/,'');
   }
   return mess;
 }
@@ -180,6 +240,7 @@ exports.generateText = function(pattern, params, serif, cb){
       elms[i].match('@') // 秘書へのメンション部分だから
       || elms[i].match(c.FLAG_ADD) // タスク付加フラグそのものだから
       || elms[i].match(c.FLAG_DONE) // タスク片付けフラグそのものだから
+      || elms[i].match(c.FLAG_UPDATE_DAILY) // デイリーリマインド登録フラグそのものだから
     ){
       // do nothing
     }else{
