@@ -137,7 +137,7 @@ exports.secretary = {
 
   send : function(){
     // prepare
-    text = '@' + this.master.name + ' ' + this.replytext + ' ' + util.getTimeHash();
+    text = '@' + this.master.name + ' ' + this.replytext /*[debug] + ' ' + util.getTimeHash()*/;
     var params = { in_reply_to_status_id: this.entry.id_str, };
     // update status
     bot.updateStatus( text, params, function(res){});

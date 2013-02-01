@@ -56,7 +56,7 @@ function sendRemind(master, pattern){
   };
   generate(pattern, params, secretary.serif, function(mess){
     // prepare
-    text = '@' + master.name + ' ' + mess + u.getTimeHash();
+    text = '@' + master.name + ' ' + mess /*[debug] + u.getTimeHash()*/;
     // update status
     bot.updateStatus( text, function(res){console.log(res);});
   });
