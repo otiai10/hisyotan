@@ -4,28 +4,17 @@
 
 //-----[module]--------------------------------------
 var fs      = require('fs'),
-  util      = require('./modules/util.js').util,
-  mngs      = require('./modules/mongoose.js').mngs,
-  generate  = require('./generater.js').generateText,
-  interpret = require('./interpreter.js').interpretText,
-  c         = require('./modules/constants').constants;
+  util      = require('./modules/util').util,
+  mngs      = require('./modules/mongoose').mngs,
+  generate  = require('./generater').generateText,
+  interpret = require('./interpreter').interpretText,
+  c         = require('./modules/constants').constants,
+  t         = require('./my_bot');
 //---------------------------------------------------
 
 //-----[const]---------------------------------------
 var SRC_PATH  = __dirname + '/src';
 //---------------------------------------------------
-
-// TODO: twitterモジュール部分をまとめる
-/********* prepare for twitter bot ********/
-var conf = require('./conf_my.js').conf;
-var twitter = require('twitter');
-var bot = new twitter({
-    consumer_key        : conf.consumer_key,
-    consumer_secret     : conf.consumer_secret,
-    access_token_key    : conf.access_token,
-    access_token_secret : conf.access_token_secret,
-});
-/******************************************/
 
 exports.secretary = {
 
@@ -140,7 +129,7 @@ exports.secretary = {
     text = '@' + this.master.name + ' ' + this.replytext /*[debug] + ' ' + util.getTimeHash()*/;
     var params = { in_reply_to_status_id: this.entry.id_str, };
     // update status
-    bot.updateStatus( text, params, function(res){});
+    t.tweet( text, params, function(res){});
   },
 
 

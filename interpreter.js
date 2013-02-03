@@ -10,33 +10,33 @@ exports.interpretText = function(text, is_mention, secr_name, triggers){
     return getTriggerPattern(text, triggers);
   }
 
-  if(text.match(c.FLAG_HELP)){
+  else if(text.match(c.FLAG_HELP)){
     return c.REP_HELP
   }
-  if(text.match(c.FLAG_DONE)){
+  else if(text.match(c.FLAG_DONE)){
     return c.REP_DONE_TASK;
   }
-  if(text.match(c.FLAG_ADD)){
+  else if(text.match(c.FLAG_ADD)){
     return c.REP_REG_TASK;
   }
 
-  if(text.match(c.FLAG_UPDATE_DAILY)){
+  else if(text.match(c.FLAG_UPDATE_DAILY)){
     return c.REP_UPDATE_DAILY;
   }
-  if(text.match(c.FLAG_ENABLE_DAILY)){
+  else if(text.match(c.FLAG_ENABLE_DAILY)){
     return c.REP_ENABLE_DAILY;
   }
-  if(text.match(c.FLAG_DISABLE_DAILY)){
+  else if(text.match(c.FLAG_DISABLE_DAILY)){
     return c.REP_DISABLE_DAILY;
   }
-  if(text.match(c.FLAG_ENABLE_WEEKLY)){
+  else if(text.match(c.FLAG_ENABLE_WEEKLY)){
     return c.REP_ENEABLE_WEEKLY;
   }
-  if(text.match(c.FLAG_DISABLE_WEEKLY)){
+  else if(text.match(c.FLAG_DISABLE_WEEKLY)){
     return c.REP_DISABLE_WEEKLY;
   }
 
-  if(text.match(c.FLAG_INIT) && text.match(c.WORD_INIT)){
+  else if(text.match(c.FLAG_INIT) && text.match(c.WORD_INIT)){
     return c.REP_INIT_PARTNERSHIP;
   }
   

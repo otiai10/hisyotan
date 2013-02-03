@@ -75,30 +75,6 @@ exports.mngs = {
         });
     },
 
-    /**
-     * @params name      String
-     * @return master    Model
-    **/
-    findTasksByName : function(name, callback){
-        Master.findOne({name:name},function(err,res){
-            if(err) callback(false);
-            else callback(res);
-        });
-    },
-
-    /**
-     * @params task_names   Array
-     * @return is_success   Bool
-    **/
-    doneTask : function(master, task_names, callback){
-        var categorized = refreshTasks(task_names, master.tasks);
-        master.tasks = categorized.new_tasks;
-        master.save(function(err,data){
-            if(err) callback(false);
-            else callback(categorized.done_task);
-        });
-    },
-
     // 今のところ使ってない
     clearAllTasks : function(master, callback){
         master.tasks = [];
@@ -109,25 +85,3 @@ exports.mngs = {
     },
 }
 
-// ----- utils -----
-function refreshTasks(targets, tasks){
-    var new_tasks = [];
-    var done_task = [];
-    for(var i = 0; i<tasks.length; i++){
-        if(in_array(tasks[i], targets)){
-            done_task.push(tasks[i]);
-        }else{
-            new_tasks.push(tasks[i]);
-        }
-    }
-    return { 'new_tasks':new_tasks, 'done_task':done_task };
-}
-
-function in_array(val, arr){
-    for(var i = 0; i<arr.length; i++){
-        if(val == arr[i]){
-            return arr[i];
-        }
-        return false;
-    }
-}
