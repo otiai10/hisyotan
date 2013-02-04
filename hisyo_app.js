@@ -20,16 +20,20 @@ var hisyotan = new twitter({
 var secretary = require('./secretary.js').secretary;
 
 hisyotan.stream('user',function(stream){
-  console.log(util.d() + 'WAKE UP');
+  console.log(util.d() + ' 秘書たんは起床しました!!');
+  hisyotan.updateStatus(util.d() + ' 秘書たんは起床しました!!',function(res){});
 
   secretary.setMode('hisyotan');
 
   stream.on('data',function(data){
-    console.log('----------------------');
-    console.log(data);
     if(!secretary.setEntry(data)){
       return 0;
     }
+    if(data.retweeted_status && Boolean(data.retweeted_status.retweeted)){
+      console.log(util.d() + '>>is retweeted');
+      return 0;
+    }
+
     secretary.main();
   });
 });
