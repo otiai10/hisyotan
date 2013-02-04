@@ -29,6 +29,11 @@ hisyotan.stream('user',function(stream){
     if(!secretary.setEntry(data)){
       return 0;
     }
+    if(data.retweeted_status && Boolean(data.retweeted_status.retweeted)){
+      console.log(util.d() + '>>is retweeted');
+      return 0;
+    }
+
     secretary.main();
   });
 });
