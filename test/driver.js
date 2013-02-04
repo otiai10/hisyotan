@@ -18,7 +18,7 @@ var sample = {
   created_at: 'Wed Jan 09 11:37:45 +0000 2013',
   id: 288972828353646600,
   id_str: '288972828353646592',
-  //text: '@hisyotan とりあえずドライバーつくりたいから返事してくr',
+  text: '@hisyotan とりあえずドライバーつくりたいから返事してくr',
   // タスク追加
   //text: '@hisyotan /& smpl01 smpl02 smpl03',
   // タスク片付け
@@ -26,7 +26,7 @@ var sample = {
   // トリガーワード
   //text: 'ほげほげおやすみなさい',
   // デイリーのコンテンツをあっぷでーと
-  text: '@hisyotan --daily-up どちらかというと早寝早起き とかとか',
+  //text: '@hisyotan --daily-up どちらかというと早寝早起き とかとか',
   // デイリーをonにする
   //text: '@hisyotan --daily-on 07:00',
   // デイリーをoffにする

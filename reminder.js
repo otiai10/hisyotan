@@ -5,28 +5,20 @@
 **/
 
 var generate  = require('./generater').generateText,
-    mngs      = require('./modules/mongoose').mngs,
+    mngs      = require('./modules/mongoose').mngs, //ここもprocにしてmngsをここに書かない　
     c         = require('./modules/constants').constants,
     u         = require('./modules/util').util,
+    t         = require('./my_bot'),
     argv      = require('argv'),
     secretary = new require('./secretary').secretary;
 
+var _targets = argv.run().targets;
+var timing   = String(_targets.shift());
+var is_debug = Boolean(_targets.shift());
+
 secretary.setMode('hisyotan');
 
-// TODO: twitterモジュール部分をまとめる
-// t.updateStatus()とかしたいね
-/********* prepare for twitter bot ********/
-var conf = require('./conf_my.js').conf;
-var twitter = require('twitter');
-var bot = new twitter({
-    consumer_key        : conf.consumer_key,
-    consumer_secret     : conf.consumer_secret,
-    access_token_key    : conf.access_token,
-    access_token_secret : conf.access_token_secret,
-});
-/******************************************/
-
-switch(argv.run().targets.shift()){
+switch(timing){
   case c.CLI_ARG_DAILY:
     mngs.findDailyMasters(function(err, master_list){
       for(var i=0; i<master_list.length; i++){
@@ -50,15 +42,39 @@ switch(argv.run().targets.shift()){
   default:
 }
 
+proc_daily = function(sendRemind, terminate){
+  mngs.findDailyMasters(function(err, master_list){
+    for(var i=0; i<master_list.length; i++){
+      if(master_list[i].daily){
+        sendRemind(master_list[i], c.REMIND_DAILY);
+      }else{
+        sendRemind(master_list[i], c.IGNORE);
+      }
+    }
+    terminate();
+  });
+}
+
+proc_weekly = function(sendRemind, terminate){
+  mngs.findWeeklyMasters(function(err, master_list){
+    for(var i=0; i<master_list.length; i++){
+      sendRemind(master_list[i], c.REMIND_WEEKLY);
+    }
+    terminate();
+  });
+}
+
 function sendRemind(master, pattern){
   var params = {
     'master' : master,
   };
   generate(pattern, params, secretary.serif, function(mess){
     // prepare
-    text = '@' + master.name + ' ' + mess /*[debug] + u.getTimeHash()*/;
-    // update status
-    bot.updateStatus( text, function(res){console.log(res);});
+    text = '@' + master.name + ' ' + mess;
+    if(is_debug) text = text + u.getTimeHash();
+    t.tweet( text, function(res){
+      if(is_debug) console.log(res);
+    });
   });
 }
 
