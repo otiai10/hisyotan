@@ -2,9 +2,9 @@
  * generater
 **/
 
-//TODO: プロパティは全部直接exportsすれば、ここで変な語尾はいらない
 var c = require('./modules/constants').constants,
- mngs = require('./modules/mongoose').mngs; //TODO: procedure哲学により、ここにmngsを書かない
+ proc = require('./procedure');
+
 
 var s = {};
 
@@ -17,7 +17,7 @@ exports.generateText = function(pattern, params, serif, cb){
     //========== REP_LIST_TASK ==================================
     case c.REP_LIST_TASK:
       // 現在のタスクを全部取得する、で、callbackでcb();する
-      getTaskListByName(params.master.name, function(tasks){
+      proc.getTaskListByName(params.master.name, function(tasks){
         if(tasks.length == 0){
           cb(getSerif('REP_LIST_VACANT'));
         }else{
@@ -30,7 +30,7 @@ exports.generateText = function(pattern, params, serif, cb){
     case c.REP_REG_TASK:
       // 名前に対して、タスクを付加する
       var new_tasks = extractTasks(params.entry.text);
-      addTaskToMasterName(params.master, new_tasks, function(new_tasks){
+      proc.addTaskToMasterName(params.master, new_tasks, function(new_tasks){
         var mess = joinTasksToText(new_tasks);
         cb(getSerif('REP_REG_TASK', [mess]));
       });
@@ -39,10 +39,10 @@ exports.generateText = function(pattern, params, serif, cb){
     case c.REP_DONE_TASK:
       // 名前に対して、タスクを削除する
       var ref_tasks = extractTasks(params.entry.text);
-      removeTasksFromMasterName(params.master, ref_tasks, function(response){
+      proc.removeTasksFromMasterName(params.master, ref_tasks, function(response){
         if(response.done_tasks.length !== 0){
           var mess = joinTasksToText(response.done_tasks);
-          cb(getSerif('REP_DONE_TASK', [mess, response.for_example, response.left_task_num]));
+          cb(getSerif('REP_DONE_TASK', [mess, response.for_example, response.left_tasks.length]));
         }
         if(response.not_found.length !== 0){
           var mess = joinTasksToText(response.not_found);
@@ -53,7 +53,7 @@ exports.generateText = function(pattern, params, serif, cb){
     //========== REP_UPDATE_DAILY ================================
     case c.REP_UPDATE_DAILY:
       var new_daily_content = joinTasksToText(extractTasks(params.entry.text), {"cut_tail":true});
-      updateDailyRemindContent(params.master, new_daily_content, function(response){
+      proc.updateDailyRemindContent(params.master, new_daily_content, function(response){
         if(response.accepted){
           cb(getSerif('REP_UPDATE_DAILY', [new_daily_content]));
         }else{
@@ -64,7 +64,7 @@ exports.generateText = function(pattern, params, serif, cb){
       // TODO: imple
     //========== REP_ENABLE_DAILY ================================
     case c.REP_ENABLE_DAILY:
-      switchDailyRemind(params.master, true, function(response){
+      proc.switchDailyRemind(params.master, true, function(response){
         if(response){
           cb(getSerif('REP_ENABLE_DAILY'));
         }
@@ -73,7 +73,7 @@ exports.generateText = function(pattern, params, serif, cb){
       // TODO: imple
     //========== REP_DISABLE_DAILY ================================
     case c.REP_DISABLE_DAILY:
-      switchDailyRemind(params.master, false, function(response){
+      proc.switchDailyRemind(params.master, false, function(response){
         if(response){
           cb(getSerif('REP_DISABLE_DAILY'));
         }
@@ -129,95 +129,6 @@ exports.generateText = function(pattern, params, serif, cb){
   }
   return str;
 }
-
-/*private*/function getTaskListByName(masterName,cb){
-  mngs.findMasterByName(masterName, function(res){
-    cb(res.tasks);
-  });
-}
-
-/*private*/function addTaskToMasterName(master,new_tasks,cb){
-  for(var i=0; i<new_tasks.length; i++){
-    master.tasks.push(new_tasks[i]);
-  }
-  mngs.saveMaster(master,function(is_success){
-    if(is_success) cb(new_tasks);
-  });
-}
-
-/**
- * TODO: ここのロジック部分って、procedureとして分離したほうがよくない？
-**/
-
-/*private*/function switchDailyRemind(master, do_daily, cb){
-  master.do_daily = do_daily; 
-  mngs.saveMaster(master, function(is_success){
-      cb(is_success);
-  });
-}
-/*private*/function removeTasksFromMasterName(master,ref_tasks,cb){
-  // TODO: ここの処理かっこわるくないか？
-  var current_tasks  = master.tasks;
-  var new_tasks      = [];
-  var done_tasks     = [];
-  var not_found      = [];
-
-  // done_tasksとnot_foundを決定する
-  for(var i=0; i<ref_tasks.length; i++){
-    if(in_array(ref_tasks[i], current_tasks)){
-      done_tasks.push(ref_tasks[i]);
-    }else{
-      not_found.push(ref_tasks[i]);
-    }
-  }
-
-  // new_tasks決定する
-  for(var i=0; i<current_tasks.length; i++){
-    if(in_array(current_tasks[i], done_tasks)){
-      //console.log(current_tasks[i], 'doneなので何もしない');
-    }else{
-      //console.log(current_tasks[i], 'プッシする');
-      new_tasks.push(current_tasks[i]);
-    }
-  }
-
-  // master情報の上塗り
-  master.tasks = new_tasks;
-
-  mngs.saveMaster(master, function(is_success){
-    if(is_success){
-      var response = {
-        'done_tasks'   :/*array*/done_tasks,
-        'left_task_num':/*int*/  new_tasks.length,
-        'not_found'    :/*array*/not_found,
-        'for_example'  :/*string*/new_tasks.shift(),
-      };
-      cb(response);
-    }
-  });
-}
-
-/*private*/function updateDailyRemindContent(master, new_daily_content, cb){
-  var response = {
-    'accepted'          : false,
-    'new_daily_content' : new_daily_content,
-  };
-  if(new_daily_content.length == 0){
-    console.log('new_daily_contentが空文字列なので取り合わない。いや、ちゃんとinvalidを伝えた方がいいだろう', new_daily_content);
-    cb(response);
-  }else{
-    master.daily = new_daily_content;
-    mngs.saveMaster(master, function(is_success){
-      if(is_success){
-        response.accepted = true;
-        cb(response);
-      }else{
-        cb(response);
-      }
-    });
-  }
-}
-
 /*private*/function joinTasksToText(tasks, opt){
   if(opt == void 0){
     opt = {};
@@ -250,7 +161,7 @@ exports.generateText = function(pattern, params, serif, cb){
   return ref_tasks;
 }
 
-/*utility?*/function in_array(target, arr){
+/*private*/function in_array(target, arr){
   for(var i=0; i<arr.length; i++){
     if(arr[i] == target){
       return arr[i];

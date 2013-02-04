@@ -21,6 +21,7 @@ var secretary = require('./secretary.js').secretary;
 
 hisyotan.stream('user',function(stream){
   console.log(util.d() + ' 秘書たんは起床しました!!');
+  hisyotan.updateStatus(util.d() + ' 秘書たんは起床しました!!',function(res){});
 
   secretary.setMode('hisyotan');
 
