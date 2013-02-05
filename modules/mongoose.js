@@ -6,10 +6,10 @@ var mongoose = require('mongoose');
 var db       = mongoose.createConnection('mongodb://localhost/test');
 // define schema
 var masterSchema = new mongoose.Schema({
-    name      : { type: String, require: true, unique: true },
+    name      : { type: String, required: true, unique: true },
     tasks     : [ String ],
     do_weekly : { type: Boolean, default: false },
-    daily     : { type: String, require: false, default: null },
+    daily     : { type: String, required: false, default: null },
     do_daily  : { type: Boolean, default: false },
 });
 // create model
@@ -37,6 +37,14 @@ exports.mngs = {
                 is_initial = false;
             }
             callback(master, is_initial);
+        });
+    },
+
+    createNewMaster : function(name, callback){
+        var master = new Master({name : name});
+        master.save(function(err,data){
+            if(err) callback(false);
+            else callback(true);
         });
     },
 
