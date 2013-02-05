@@ -48,6 +48,15 @@ exports.util = {
         return ('['+yr+'/'+mn+'/'+dt+'/'+hr+':'+mi+']');
     },
 
+    in_array : function(target, arr){
+      for(var i=0; i<arr.length; i++){
+        if(arr[i] == target){
+          return arr[i];
+        }
+      }
+      return false;
+    }
+
 };
 
 function _0Pad(str){

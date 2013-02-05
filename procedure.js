@@ -6,6 +6,18 @@
 var c = require('./modules/constants').constants,
  mngs = require('./modules/mongoose').mngs;
 
+exports.initPartnership = function(masterName, cb){
+  mngs.createNewMaster(masterName,function(is_success){
+    cb(is_success);
+  });
+}
+
+exports.terminatePartnership = function(master, cb){
+  mngs.removeMaster(master, function(is_success){
+    cb(is_success);
+  });
+}
+
 exports.getTaskListByName = function(masterName,cb){
   mngs.findMasterByName(masterName, function(res){
     cb(res.tasks);
@@ -91,3 +103,11 @@ exports.updateDailyRemindContent = function(master, new_daily_content, cb){
   }
 }
 
+/*private*/function in_array(target, arr){
+  for(var i=0; i<arr.length; i++){
+    if(arr[i] == target){
+      return arr[i];
+    }
+  }
+  return false;
+}
