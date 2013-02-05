@@ -3,15 +3,17 @@ exports.constants = {
   'IGNORE'                  : -1,
 
   /* reply pattern */
-  'REP_HELP'                :  0,
-  'REP_LIST_TASK'           :  1,
-  'REP_REG_TASK'            :  2,
-  'REP_DONE_TASK'           :  3,
-  'REP_UPDATE_DAILY'        :  4,
-  'REP_ENABLE_DAILY'        :  5,
-  'REP_DISABLE_DAILY'       :  6,
-  'REP_ENEABLE_WEEKLY'      :  7,
-  'REP_DISABLE_WEEKLY'      :  8,
+  'REP_HELP'                 :  0,
+  'REP_LIST_TASK'            :  1,
+  'REP_REG_TASK'             :  2,
+  'REP_DONE_TASK'            :  3,
+  'REP_UPDATE_DAILY'         :  4,
+  'REP_ENABLE_DAILY'         :  5,
+  'REP_DISABLE_DAILY'        :  6,
+  'REP_ENEABLE_WEEKLY'       :  7,
+  'REP_DISABLE_WEEKLY'       :  8,
+  'REP_INIT_PARTNERSHIP'     :  9,
+  'REP_TERMINATE_PARTNERSHIP': 10,
 
   /* remind pattern */
   'REMIND_DAILY'            :101,
@@ -34,6 +36,8 @@ exports.constants = {
   'FLAG_DISABLE_WEEKLY'     : '--weekly-off',
   'FLAG_INIT'               : '--init',
   'WORD_INIT'               : 'よろしくね',
+  'FLAG_TERMINATE'          : '--bye',
+  'WORD_TERMINATE'          : 'きみとはやってられん',
 
   /* CLI_ARG */
   'CLI_ARG_DAILY'           : 'daily',

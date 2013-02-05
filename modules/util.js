@@ -36,18 +36,40 @@ exports.util = {
         return ('['+yr+'/'+mn+'/'+dt+'/'+hr+':'+mi+']');
     },
 
-    d : function(){
+    d : function(format){
         var date = new Date();
 
         var yr = date.getYear() + 1900;
-        var mn = _0Pad(date.getMonth() + 1);
-        var dt = _0Pad(date.getDate());
-        var hr = _0Pad(date.getHours());
-        var mi = _0Pad(date.getMinutes());
+        var mn = this.zeroPad(date.getMonth() + 1);
+        var dt = this.zeroPad(date.getDate());
+        var hr = this.zeroPad(date.getHours());
+        var mi = this.zeroPad(date.getMinutes());
 
-        return ('['+yr+'/'+mn+'/'+dt+'/'+hr+':'+mi+']');
+        switch(format){
+          case 'HHmm':
+            return ('['+hr+':'+mi+']');
+          case 'YYYYMMDD':
+            return ('['+yr+'/'+mn+'/'+dt+']');
+          default:
+            return ('['+yr+'/'+mn+'/'+dt+'/'+hr+':'+mi+']');
+        }
     },
 
+    in_array : function(target, arr){
+      for(var i=0; i<arr.length; i++){
+        if(arr[i] == target){
+          return arr[i];
+        }
+      }
+      return false;
+    },
+
+    zeroPad : function(str, order){
+      switch(order){
+        default:
+          return String('00' + str).slice(-2);
+      }
+    },
 };
 
 function _0Pad(str){

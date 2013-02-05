@@ -4,7 +4,7 @@
 
 var c = require('./modules/constants').constants;
 
-exports.interpretText = function(text, is_mention, secr_name, triggers){
+exports.interpretText = function(text, is_mention, is_new_commer, triggers){
 
   if(!is_mention){
     return getTriggerPattern(text, triggers);
@@ -39,8 +39,18 @@ exports.interpretText = function(text, is_mention, secr_name, triggers){
   else if(text.match(c.FLAG_INIT) && text.match(c.WORD_INIT)){
     return c.REP_INIT_PARTNERSHIP;
   }
+
+  else if(text.match(c.FLAG_TERMINATE) && text.match(c.WORD_TERMINATE)){
+    return c.REP_TERMINATE_PARTNERSHIP;
+  }
+ 
+  else if(is_new_commer){
+    return c.REP_HELP;
+  }
   
-  return c.REP_LIST_TASK;
+  else{
+    return c.REP_LIST_TASK;
+  }
 };
 
 /*private*/function getTriggerPattern(text, triggers){

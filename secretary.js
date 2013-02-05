@@ -1,5 +1,6 @@
 /**
  * hisyotanの実体
+ * TODO: secretary.jsなんてダサいから、core.jsとかにしたい
 **/
 
 //-----[module]--------------------------------------
@@ -26,8 +27,11 @@ exports.secretary = {
   master   : {}, // このスレッドで相手するご主人様情報
   _pattern :  0,
   replytext: '',
+  is_debug : false,
 
   main : function(is_debug){
+
+    this.is_debug = is_debug;
 
     this.setReferer(this.entry.user);
     var self = this;
@@ -98,14 +102,10 @@ exports.secretary = {
   // 発言を解釈し、返信へdispatchする
   reply : function(){
 
-    if(this.referer.is_new_commer){
-      if((this.entry.in_reply_to_screen_name == this.name) && (this.entry.text.match('--init'))){
-        this._pattern = c.IGNORE;
-      }
-    }else{
-      var is_mention = (this.entry.text.match('@'+this.name))? true:false;
-      this._pattern  = interpret(this.entry.text, is_mention, this.name, this.triggers); 
-    }
+    var is_mention = (this.entry.text.match('@'+this.name))? true : false;
+    this.master.name = (this.referer.is_new_commer)? this.referer.screen_name : this.master.name;
+    // interpret!!
+    this._pattern  = interpret(this.entry.text, is_mention, this.referer.is_new_commer, this.triggers); 
 
     //-- LOG --
     console.log(util.d() + this._pattern + ' <<< ' +this.entry.text );
@@ -126,10 +126,11 @@ exports.secretary = {
 
   send : function(){
     // prepare
-    text = '@' + this.master.name + ' ' + this.replytext /*[debug] + ' ' + util.getTimeHash()*/;
+    text = '@' + this.master.name + ' ' + this.replytext;
+    if(this.is_debug) text = text + ' [debug' + util.getTimeHash() + ']';
     var params = { in_reply_to_status_id: this.entry.id_str, };
     // update status
-    t.tweet( text, params, function(res){});
+    t.tweet( text, params, function(res){/*console.log(res);*/});
   },
 
 
