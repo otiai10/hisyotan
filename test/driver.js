@@ -32,8 +32,9 @@ var sample = {
   //text: '@hisyotan --daily-on 07:00',
   // デイリーをoffにする
   //text: '@hisyotan --daily-off',
-  text: '@hisyotan --init よろしくね',
-  //text: '@hisyotan --bye きみとはやってられん',
+  //text: '@hisyotan --init よろしくね',
+  // PDFのデバグ
+  text: '@hisyotan --pdf-dbg',
   source: '<a href="http://itunes.apple.com/us/app/twitter/id409789998?mt=12" rel="nofollow">Twitter for Mac</a>',
   truncated: false,
   in_reply_to_status_id: null,
