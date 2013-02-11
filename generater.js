@@ -109,6 +109,8 @@ exports.generateText = function(pattern, params, serif, cb){
       // TODO: imple
     //========== REP_DISABLE_WEEKLY ================================
       // TODO: imple
+    //========== REP_PDF ===========================================
+      // TODO: imple
     //========== TRIGGER_TAIKIN ===============================
     case c.TRIGGER_TAIKIN:
       cb(getSerif('TRIGGER_TAIKIN'));
