@@ -5,6 +5,7 @@
 var c = require('./modules/constants').constants,
  proc = require('./procedure');
 
+var bot = new require('./modules/twitter'); //だってnode_twitterモジュールにfollow無いぽいだもん
 
 var s = {};
 
@@ -14,6 +15,33 @@ exports.generateText = function(pattern, params, serif, cb){
   s = serif;
 
   switch(pattern){
+    //========== REP_HELP =======================================
+    case c.REP_HELP:
+      cb(getSerif('REP_HELP'));
+      break;
+    //========== REP_INIT_PARTNERSHIP ===========================
+    case c.REP_INIT_PARTNERSHIP:
+      bot.follow({ screen_name: params.master.name },function(err,data){
+        proc.initPartnership(params.master.name, function(is_success){
+          if(is_success){
+            cb(getSerif('REP_INIT_PARTNERSHIP',[params.master.name]));
+          }else{
+            cb(getSerif('REP_ERROR'));
+          }
+        });
+      });
+      break;
+    //========== REP_TERMINATE_PARTNERSHIP ======================
+    case c.REP_TERMINATE_PARTNERSHIP:
+      proc.terminatePartnership(params.master, function(is_success){
+        if(is_success){
+          bot.leave({ screen_name: params.master.name },function(err,data){});
+          cb(getSerif('REP_TERMINATE_PARTNERSHIP'));
+        }else{
+          cb(getSerif('REP_ERROR'));
+        }
+      });
+      break;
     //========== REP_LIST_TASK ==================================
     case c.REP_LIST_TASK:
       // 現在のタスクを全部取得する、で、callbackでcb();する
@@ -61,7 +89,6 @@ exports.generateText = function(pattern, params, serif, cb){
         }
       });
       break;
-      // TODO: imple
     //========== REP_ENABLE_DAILY ================================
     case c.REP_ENABLE_DAILY:
       proc.switchDailyRemind(params.master, true, function(response){
@@ -70,7 +97,6 @@ exports.generateText = function(pattern, params, serif, cb){
         }
       });
       break;
-      // TODO: imple
     //========== REP_DISABLE_DAILY ================================
     case c.REP_DISABLE_DAILY:
       proc.switchDailyRemind(params.master, false, function(response){
@@ -79,7 +105,6 @@ exports.generateText = function(pattern, params, serif, cb){
         }
       });
       break;
-      // TODO: imple
     //========== REP_ENABLE_WEEKLY ================================
       // TODO: imple
     //========== REP_DISABLE_WEEKLY ================================

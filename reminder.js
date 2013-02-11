@@ -18,6 +18,8 @@ var is_debug = Boolean(_targets.shift());
 
 secretary.setMode('hisyotan');
 
+if(is_debug) console.log('[this is debug] ' + u.d());
+
 switch(timing){
   case c.CLI_ARG_DAILY:
     mngs.findDailyMasters(function(err, master_list){
@@ -27,6 +29,7 @@ switch(timing){
         }else{
           sendRemind(master_list[i], c.IGNORE);
         }
+        console.log(u.d() + $i + ' Daily done');
       }
       terminate();
     });
@@ -35,6 +38,7 @@ switch(timing){
     mngs.findWeeklyMasters(function(err, master_list){
       for(var i=0; i<master_list.length; i++){
         sendRemind(master_list[i], c.REMIND_WEEKLY);
+        console.log(u.d() + $i + ' Weekly done');
       }
       terminate();
     });
@@ -50,6 +54,7 @@ proc_daily = function(sendRemind, terminate){
       }else{
         sendRemind(master_list[i], c.IGNORE);
       }
+      console.log(u.d() + $i + ' Daily done');
     }
     terminate();
   });
@@ -59,6 +64,7 @@ proc_weekly = function(sendRemind, terminate){
   mngs.findWeeklyMasters(function(err, master_list){
     for(var i=0; i<master_list.length; i++){
       sendRemind(master_list[i], c.REMIND_WEEKLY);
+      console.log(u.d() + $i + ' Weekly done');
     }
     terminate();
   });
