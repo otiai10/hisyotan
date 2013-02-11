@@ -14,10 +14,14 @@ exports.constants = {
   'REP_DISABLE_WEEKLY'       :  8,
   'REP_INIT_PARTNERSHIP'     :  9,
   'REP_TERMINATE_PARTNERSHIP': 10,
+  'REP_ENABLE_PDF'           : 11,
+  'REP_DISABLE_PDF'          : 12,
+  'REP_PDF'                  : 13,
 
   /* remind pattern */
   'REMIND_DAILY'            :101,
   'REMIND_WEEKLY'           :102,
+  'REMIND_PDF'              :103,
 
   /* trigger pattern */
   'TRIGGER_TAIKIN'          :1001,
@@ -34,6 +38,9 @@ exports.constants = {
   'FLAG_DISABLE_DAILY'      : '--daily-off',
   'FLAG_ENABLE_WEEKLY'      : '--weekly-on',
   'FLAG_DISABLE_WEEKLY'     : '--weekly-off',
+  'FLAG_ENABLE_PDF'         : '--pdf-on',
+  'FLAG_DISABLE_PDF'        : '--pdf-off',
+  'FLAG_DEBUG_PDF'          : '--pdf-dbg',
   'FLAG_INIT'               : '--init',
   'WORD_INIT'               : 'よろしくね',
   'FLAG_TERMINATE'          : '--bye',
