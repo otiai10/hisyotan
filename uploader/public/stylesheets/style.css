@@ -1,0 +1,18 @@
+body {
+  padding: 50px;
+  background-color: #f5f5f5;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+.mess {
+  color: #f60;
+}
+
+.default {
+  color: #000;
+  text-decoration: none;
+}
