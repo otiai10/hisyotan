@@ -19,21 +19,23 @@ var sample = {
   created_at: 'Wed Jan 09 11:37:45 +0000 2013',
   id: 288972828353646600,
   id_str: '288972828353646592',
+  // ########## とりあえず ##########
   //text: '@hisyotan とりあえずドライバーつくりたいから返事してくr',
-  // タスク追加
+  // ########## タスク管理 ##########
   //text: '@hisyotan /& smpl01 smpl02 smpl03',
-  // タスク片付け
   //text: '@hisyotan --done smpl01 smpl02 smpl03 smpl04',
-  // トリガーワード
+  // ########## トリガーワード ##########
   //text: 'ほげほげおやすみなさい',
-  // デイリーのコンテンツをあっぷでーと
+  // ########## デイリーリマインド ##########
   //text: '@hisyotan --daily-up どちらかというと早寝早起き とかとか',
-  // デイリーをonにする
   //text: '@hisyotan --daily-on 07:00',
-  // デイリーをoffにする
   //text: '@hisyotan --daily-off',
+  // ########## 契約／解除 ##########
   //text: '@hisyotan --init よろしくね',
-  // PDFのデバグ
+  //text: '@hisyotan --bye きみとはやってられん',
+  // ########## PDFのリマインド ##########
+  //text: '@hisyotan --pdf-on',
+  //text: '@hisyotan --pdf-off',
   text: '@hisyotan --pdf-dbg',
   source: '<a href="http://itunes.apple.com/us/app/twitter/id409789998?mt=12" rel="nofollow">Twitter for Mac</a>',
   truncated: false,

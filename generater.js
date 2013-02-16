@@ -109,8 +109,32 @@ exports.generateText = function(pattern, params, serif, cb){
       // TODO: imple
     //========== REP_DISABLE_WEEKLY ================================
       // TODO: imple
+    //========== REP_ENABLE_PDF ====================================
+    case c.REP_ENABLE_PDF:
+      proc.switchPDFRemind(params.master, true, function(response){
+        if(response){
+          cb(getSerif('REP_ENABLE_PDF'));
+        }
+      });
+      break;
+    //========== REP_DISABLE_PDF ===================================
+    case c.REP_DISABLE_PDF:
+      proc.switchPDFRemind(params.master, false, function(response){
+        if(response){
+          cb(getSerif('REP_DISABLE_PDF'));
+        }
+      });
+      break;
     //========== REP_PDF ===========================================
-      // TODO: imple
+    case c.REP_PDF:
+      proc.extractPDFText(params.master.name, function(chunk, url){
+        if(chunk && url){
+          cb(getSerif('REMIND_PDF', [chunk, url]));
+        }else if(chunk == ''){
+          cb(getSerif('REMIND_PDF_NOT_OCR', [url]));
+        }
+      });
+      break;
     //========== TRIGGER_TAIKIN ===============================
     case c.TRIGGER_TAIKIN:
       cb(getSerif('TRIGGER_TAIKIN'));
