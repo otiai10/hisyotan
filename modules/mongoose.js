@@ -58,6 +58,10 @@ exports.mngs = {
         Master.find().where('do_weekly').equals(true).exec(callback);
     },
 
+    findPDFMasters : function(callback){
+        Master.find().where('do_pdf').equals(true).exec(callback);
+    },
+
     // debug
     findAllMasters : function(callback){
         Master.find().exec(callback);

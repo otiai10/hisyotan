@@ -49,4 +49,10 @@ exports.constants = {
   /* CLI_ARG */
   'CLI_ARG_DAILY'           : 'daily',
   'CLI_ARG_WEEKLY'          : 'weekly',
+  'CLI_ARG_PDF'             : 'pdf',
+
+  /* PDF handle */
+  'CUT_TAIL'                : 200,
+  'CHUNK_LEN'               : 80,
+  'REMIND_PDF_PERCENTAGE'   : 2,
 };

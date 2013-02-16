@@ -3,7 +3,7 @@ require 'pdf/reader'
 #require 'pp'
 
 # instanciate
-reader = PDF::Reader.new('sample2.pdf')
+reader = PDF::Reader.new(ARGV[0])
 
 # pdf output
 #puts reader.pdf_version
