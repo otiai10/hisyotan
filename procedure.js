@@ -4,7 +4,10 @@
 
 // required
 var c = require('./modules/constants').constants,
- mngs = require('./modules/mongoose').mngs;
+ mngs = require('./modules/mongoose').mngs,
+ exec = require('child_process').exec,
+ path = require('path'),
+ conf = require('./conf_my').conf;
 
 exports.initPartnership = function(masterName, cb){
   mngs.createNewMaster(masterName,function(is_success){
@@ -101,6 +104,53 @@ exports.updateDailyRemindContent = function(master, new_daily_content, cb){
       }
     });
   }
+}
+
+exports.switchPDFRemind = function(master, do_pdf, cb){
+  master.do_pdf = do_pdf; 
+  mngs.saveMaster(master, function(is_success){
+      cb(is_success);
+  });
+}
+
+/*
+ * @return: res : {
+ *            chunk : テキスト断片 or false
+ *            url   : pdfへのリンク,
+ *          }
+**/
+exports.extractPDFText = function(masterName, cb){
+  mngs.findMasterByName(masterName, function(master){
+    if(master){
+      if(master.do_pdf){
+        //fileの存在をチェック
+        file_path = conf.PDF_ROOT + master.name + conf.PDF_SUFFIX;
+        path.exists(file_path, function(exists) {
+          if(exists){
+            // PDFからテキストを抽出して云々
+            cmd = generateCommand(file_path);
+            exec(cmd, function(err, stdout, stderr){
+              var max = stdout.length - c.CUT_TAIL;
+              var _offset = Math.floor(Math.random() * (max - c.CHUNK_LEN));
+              var chunk = stdout.slice( _offset, _offset + c.CHUNK_LEN);
+              var url = conf.URL_ROOT + master.name + conf.PDF_SUFFIX;
+              cb(chunk,url);
+            });
+          }else{
+            console.log('マスターはいたけど、fileはなかった');
+          }
+        });
+      }else{
+        console.log('PDFがonじゃない');
+      }
+    }else{
+      console.log('マスターが見つからない');
+    }
+  });
+}
+
+/*private*/function generateCommand(file_path){
+  return "ruby " + __dirname + "/uploader/pdfParser.rb " + file_path + " | sed 's/ //g' | tr -d \\\\n";
 }
 
 /*private*/function in_array(target, arr){
