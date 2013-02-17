@@ -70,8 +70,11 @@ exports.generateText = function(pattern, params, serif, cb){
       proc.removeTasksFromMasterName(params.master, ref_tasks, function(response){
         if(response.done_tasks.length !== 0){
           var mess = joinTasksToText(response.done_tasks);
-          //cb(getSerif('REP_DONE_TASK', [mess, response.for_example, response.left_tasks.length]));
-          cb(getSerif('REP_DONE_TASK', [mess, response.for_example]));
+          if(response.left_tasks.length === 0){
+            cb(getSerif('REP_COMPLETE_TASK', [mess]));
+          }else{
+            cb(getSerif('REP_DONE_TASK', [mess, response.for_example]));
+          }
         }
         if(response.not_found.length !== 0){
           var mess = joinTasksToText(response.not_found);
