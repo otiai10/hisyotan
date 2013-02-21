@@ -110,9 +110,21 @@ exports.generateText = function(pattern, params, serif, cb){
       });
       break;
     //========== REP_ENABLE_WEEKLY ================================
-      // TODO: imple
+    case c.REP_ENABLE_WEEKLY:
+      proc.switchWeeklyRemind(params.master, true, function(response){
+        if(response){
+          cb(getSerif('REP_ENABLE_WEEKLY'));
+        }
+      });
+      break;
     //========== REP_DISABLE_WEEKLY ================================
-      // TODO: imple
+    case c.REP_DISABLE_WEEKLY:
+      proc.switchWeeklyRemind(params.master, false, function(response){
+        if(response){
+          cb(getSerif('REP_DISABLE_WEEKLY'));
+        }
+      });
+      break;
     //========== REP_ENABLE_PDF ====================================
     case c.REP_ENABLE_PDF:
       proc.switchPDFRemind(params.master, true, function(response){

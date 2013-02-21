@@ -43,6 +43,13 @@ exports.switchDailyRemind = function(master, do_daily, cb){
   });
 }
 
+exports.switchWeeklyRemind = function(master, do_weekly, cb){
+  master.do_weekly = do_weekly; 
+  mngs.saveMaster(master, function(is_success){
+      cb(is_success);
+  });
+}
+
 exports.removeTasksFromMasterName = function(master,ref_tasks,cb){
   // TODO: ここの処理かっこわるくないか？
   var current_tasks  = master.tasks;

@@ -30,13 +30,16 @@ var sample = {
   //text: '@hisyotan --daily-up どちらかというと早寝早起き とかとか',
   //text: '@hisyotan --daily-on 07:00',
   //text: '@hisyotan --daily-off',
+  // ########## ウィークリーリマインド ######
+  text: '@hisyotan --weekly-on',
+  //text: '@hisyotan --weekly-off',
   // ########## 契約／解除 ##########
   //text: '@hisyotan --init よろしくね',
   //text: '@hisyotan --bye きみとはやってられん',
   // ########## PDFのリマインド ##########
   //text: '@hisyotan --pdf-on',
   //text: '@hisyotan --pdf-off',
-  text: '@hisyotan --pdf-dbg',
+  //text: '@hisyotan --pdf-dbg',
   source: '<a href="http://itunes.apple.com/us/app/twitter/id409789998?mt=12" rel="nofollow">Twitter for Mac</a>',
   truncated: false,
   in_reply_to_status_id: null,
