@@ -33,7 +33,7 @@ exports.interpretText = function(text, is_mention, is_new_commer, triggers){
     return c.REP_DISABLE_DAILY;
   }
   else if(text.match(c.FLAG_ENABLE_WEEKLY)){
-    return c.REP_ENEABLE_WEEKLY;
+    return c.REP_ENABLE_WEEKLY;
   }
   else if(text.match(c.FLAG_DISABLE_WEEKLY)){
     return c.REP_DISABLE_WEEKLY;
