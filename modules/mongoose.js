@@ -11,6 +11,8 @@ var masterSchema = new mongoose.Schema({
     do_weekly : { type: Boolean, default: false },
     daily     : { type: String, required: false, default: null },
     do_daily  : { type: Boolean, default: false },
+    do_pdf    : { type: Boolean, default: false },
+    pdf_url   : { type: String, default: null },
 });
 // create model
 var Master = db.model('Master', masterSchema);
@@ -54,6 +56,10 @@ exports.mngs = {
 
     findWeeklyMasters : function(callback){
         Master.find().where('do_weekly').equals(true).exec(callback);
+    },
+
+    findPDFMasters : function(callback){
+        Master.find().where('do_pdf').equals(true).exec(callback);
     },
 
     // debug

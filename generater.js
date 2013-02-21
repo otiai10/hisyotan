@@ -70,7 +70,11 @@ exports.generateText = function(pattern, params, serif, cb){
       proc.removeTasksFromMasterName(params.master, ref_tasks, function(response){
         if(response.done_tasks.length !== 0){
           var mess = joinTasksToText(response.done_tasks);
-          cb(getSerif('REP_DONE_TASK', [mess, response.for_example, response.left_tasks.length]));
+          if(response.left_tasks.length === 0){
+            cb(getSerif('REP_COMPLETE_TASK', [mess]));
+          }else{
+            cb(getSerif('REP_DONE_TASK', [mess, response.for_example]));
+          }
         }
         if(response.not_found.length !== 0){
           var mess = joinTasksToText(response.not_found);
@@ -106,9 +110,47 @@ exports.generateText = function(pattern, params, serif, cb){
       });
       break;
     //========== REP_ENABLE_WEEKLY ================================
-      // TODO: imple
+    case c.REP_ENABLE_WEEKLY:
+      proc.switchWeeklyRemind(params.master, true, function(response){
+        if(response){
+          cb(getSerif('REP_ENABLE_WEEKLY'));
+        }
+      });
+      break;
     //========== REP_DISABLE_WEEKLY ================================
-      // TODO: imple
+    case c.REP_DISABLE_WEEKLY:
+      proc.switchWeeklyRemind(params.master, false, function(response){
+        if(response){
+          cb(getSerif('REP_DISABLE_WEEKLY'));
+        }
+      });
+      break;
+    //========== REP_ENABLE_PDF ====================================
+    case c.REP_ENABLE_PDF:
+      proc.switchPDFRemind(params.master, true, function(response){
+        if(response){
+          cb(getSerif('REP_ENABLE_PDF'));
+        }
+      });
+      break;
+    //========== REP_DISABLE_PDF ===================================
+    case c.REP_DISABLE_PDF:
+      proc.switchPDFRemind(params.master, false, function(response){
+        if(response){
+          cb(getSerif('REP_DISABLE_PDF'));
+        }
+      });
+      break;
+    //========== REP_PDF ===========================================
+    case c.REP_PDF:
+      proc.extractPDFText(params.master.name, function(chunk, url){
+        if(chunk && url){
+          cb(getSerif('REMIND_PDF', [chunk, url]));
+        }else if(chunk == ''){
+          cb(getSerif('REMIND_PDF_NOT_OCR', [url]));
+        }
+      });
+      break;
     //========== TRIGGER_TAIKIN ===============================
     case c.TRIGGER_TAIKIN:
       cb(getSerif('TRIGGER_TAIKIN'));
