@@ -38,7 +38,7 @@ switch(timing){
     mngs.findWeeklyMasters(function(err, master_list){
       for(var i=0; i<master_list.length; i++){
         sendRemind(master_list[i], c.REMIND_WEEKLY);
-        console.log(u.d() + $i + ' Weekly done');
+        console.log(u.d() + i + ' Weekly done');
       }
       terminate();
     });
