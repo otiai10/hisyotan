@@ -24,15 +24,13 @@ var hisyotan = new twitter({
 var secretary = require('./secretary.js').secretary;
 
 if(argv.run().targets.shift() === 'stop'){
-  hisyotan.updateStatus(util.d() + ' ...　ちょっと疲れたんで寝ますねぇ....ふわぁぁ...', function(res){
-    if(res){
-      exec("kill -9 `ps aux | grep node | grep hisyo | awk '{print $2}'`", function(err, stdout, stderr){
-        console.log("err="+err);
-        console.log("stdout="+stdout);
-        console.log("stderr="+stderr);
-        process.exit();
-      });
-    }
+  exec("kill -9 `ps aux | grep node | grep $PWD/hisyo_app.js | awk '{print $2}'`", function(err, stdout, stderr){
+    console.log("err="+err);
+    console.log("stdout="+stdout);
+    console.log("stderr="+stderr);
+    setTimeout(function(){
+      process.exit();
+    },2000);
   });
 }else{
   hisyotan.stream('user',function(stream){
