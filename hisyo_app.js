@@ -24,7 +24,7 @@ var hisyotan = new twitter({
 var secretary = require('./secretary.js').secretary;
 
 if(argv.run().targets.shift() === 'stop'){
-  exec("kill -9 `ps aux | grep node | grep $PWD/hisyo_app.js | awk '{print $2}'`", function(err, stdout, stderr){
+  exec("kill -9 `ps aux | grep node | grep $PWD | awk '{print $2}'`", function(err, stdout, stderr){
     console.log("err="+err);
     console.log("stdout="+stdout);
     console.log("stderr="+stderr);

@@ -59,6 +59,7 @@ exports.removeTasksFromMasterName = function(master,ref_tasks,cb){
   for(var i=0; i<ref_tasks.length; i++){
     var match = in_array(ref_tasks[i], current_tasks);
     if(match){
+      done_tasks.push(ref_tasks[i]);
       current_tasks.splice(match.index,1);
     }else{
       not_found.push(ref_tasks[i]);
