@@ -29,7 +29,7 @@ switch(timing){
         }else{
           sendRemind(master_list[i], c.IGNORE);
         }
-        console.log(u.d() + $i + ' Daily done');
+        console.log(u.d() + i + ' Daily done');
       }
       terminate();
     });
