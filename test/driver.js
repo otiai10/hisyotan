@@ -23,7 +23,7 @@ var sample = {
   //text: '@hisyotan とりあえずドライバーつくりたいから返事してくr',
   // ########## タスク管理 ##########
   //text: '@hisyotan /& smpl01 smpl02 smpl03',
-  //text: '@hisyotan --done smpl01 smpl02 smpl03 smpl04',
+  text: '@hisyotan --done とうろく',
   // ########## トリガーワード ##########
   //text: 'ほげほげおやすみなさい',
   // ########## デイリーリマインド ##########
@@ -31,7 +31,7 @@ var sample = {
   //text: '@hisyotan --daily-on 07:00',
   //text: '@hisyotan --daily-off',
   // ########## ウィークリーリマインド ######
-  text: '@hisyotan --weekly-on',
+  // text: '@hisyotan --weekly-on',
   //text: '@hisyotan --weekly-off',
   // ########## 契約／解除 ##########
   //text: '@hisyotan --init よろしくね',
