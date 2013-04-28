@@ -21,6 +21,17 @@ case $1 in
     echo "Hisyotan Stopped."
     sleep 1s
     break;;
+  "--restart" )
+    node $PWD/hisyo_app stop >> log/hisyotan.log &
+    echo "Hisyotan Stopped."
+    sleep 1s
+    nohup node $PWD/hisyo_app debug >> log/hisyotan.log &
+    echo "Hisyotan started."
+    sleep 1s
+    nohup sh $PWD/cron_set/watcher.sh >> log/watcher.log &
+    echo "Watcher started."
+    sleep 1s
+    break;;
   "--state" ) ps aux | grep node  | grep $PWD | grep -v grep
     break;;
   * )
