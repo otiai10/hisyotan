@@ -12,7 +12,8 @@ watcher_log_path='log/watcher.'$cur_date'.log'
 case $1 in
   "--start" )
     sleep 1s
-    nohup node $PWD/hisyo_app debug >> $node_log_path &
+    #nohup node $PWD/hisyo_app debug >> $node_log_path &
+    nohup node $PWD/hisyo_app >> $node_log_path &
     echo "Hisyotan started."
     sleep 1s
     nohup sh $PWD/cron_set/watcher.sh >> $watcher_log_path &
@@ -29,7 +30,8 @@ case $1 in
     node $PWD/hisyo_app stop >> $node_log_path &
     echo "Hisyotan Stopped."
     sleep 1s
-    nohup node $PWD/hisyo_app debug >> $node_log_path &
+    #nohup node $PWD/hisyo_app debug >> $node_log_path &
+    nohup node $PWD/hisyo_app >> $node_log_path &
     echo "Hisyotan started."
     sleep 1s
     nohup sh $PWD/cron_set/watcher.sh >> $watcher_log_path &
