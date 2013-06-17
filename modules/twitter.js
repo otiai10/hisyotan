@@ -70,3 +70,16 @@ exports.fav = function(id, callback){
     callback(e,e);
   }
 };
+
+// tweet (for test)
+exports.tweet = function(params, callback){
+  oauth.post(
+    conf.statuses_update_api,
+    conf.access_token,
+    conf.access_token_secret,
+    params,
+    function(err, data){
+      callback(err,data);
+    }
+  );
+};
