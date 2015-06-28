@@ -7,17 +7,17 @@ import (
 	"github.com/otiai10/twistream"
 )
 
-type AddHandler struct{}
+type DoneHandler struct{}
 
-func (h AddHandler) Match(tw twistream.Status) bool {
+func (h DoneHandler) Match(tw twistream.Status) bool {
 	if tw.InReplyToUserIdStr != config.V.Twitter.Bot.UserID {
 		return false
 	}
 	d := words.Parse(tw.Text)
-	return (d.Has("/add") || d.Has("/a"))
+	return (d.Has("/done") || d.Has("/d"))
 }
 
-func (h AddHandler) Handle(tw twistream.Status, tl *twistream.Timeline) error {
+func (h DoneHandler) Handle(tw twistream.Status, tl *twistream.Timeline) error {
 
 	botname := config.V.Twitter.Bot.ScreenName
 
@@ -26,15 +26,16 @@ func (h AddHandler) Handle(tw twistream.Status, tl *twistream.Timeline) error {
 		return err
 	}
 
-	d := words.Parse(tw.Text).Remove("@" + botname).Remove("/add", "/a")
+	d := words.Parse(tw.Text).Remove("@" + botname).Remove("/done", "/d")
 
-	user.TODOs = append(user.TODOs, d.Words...)
+	newlist := words.New(user.TODOs...).Remove(d.Words...).Words
+	user.TODOs = newlist
 
 	user.Update(DB())
 
 	txt := words.New(d.Words...).
 		Prepend("@" + tw.User.ScreenName).
-		Append("追加しました").
+		Append("削除しました").
 		Join(" ")
 	return tl.Tweet(twistream.Status{
 		Text:                txt,

@@ -44,6 +44,8 @@ type User struct {
 	Following                      bool   `bson:"following"`
 	FollowRequestSent              bool   `bson:"follow_request_sent"`
 	Notifications                  bool   `bson:"notifications"`
+
+	TODOs                          []string `bson:"todos"`
 }
 
 func FindUserByIdStr(db *mgo.Database, idstr string) (*User, error) {
@@ -54,6 +56,13 @@ func FindUserByIdStr(db *mgo.Database, idstr string) (*User, error) {
 
 func SaveNewUser(db *mgo.Database, user *User) error {
 	return db.C("users").Insert(user)
+}
+
+func (user *User) Update(db *mgo.Database) error {
+	_, err := db.C("users").Upsert(bson.M{
+		"id_str": user.IdStr,
+	}, user)
+	return err
 }
 
 func NewUserFromTwistreamStatus(tw twistream.Status) *User {

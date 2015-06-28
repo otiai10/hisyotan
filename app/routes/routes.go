@@ -37,9 +37,12 @@ func LoadHandlers() error {
 	}
 	*/
 	routes = []MatchHandler{
+		handlers.DoneHandler{},
+		handlers.ListHandler{},
+		handlers.AddHandler{},
 		handlers.RememberMeHandler{},
 		handlers.HelloHandler{},
-		handlers.EchoHandler{},
+		handlers.AddHandler{},
 	}
 	return nil
 }
@@ -49,7 +52,11 @@ func Listen(timeline *twistream.Timeline) {
 	for {
 		select {
 		case tw := <-ch:
-			matchesAndHandles(tw, timeline)
+			err := matchesAndHandles(tw, timeline)
+			if err != nil {
+				h := handlers.OnErrorHandler{}
+				h.HandleError(err, tw, timeline)
+			}
 		}
 	}
 }

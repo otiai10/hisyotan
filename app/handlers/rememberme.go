@@ -2,10 +2,11 @@ package handlers
 
 import (
 	"log"
-	"github.com/otiai10/twistream"
-	"github.com/otiai10/hisyotan/config"
-	"github.com/otiai10/hisyotan/app/utils/words"
+
 	"github.com/otiai10/hisyotan/app/models"
+	"github.com/otiai10/hisyotan/app/utils/words"
+	"github.com/otiai10/hisyotan/config"
+	"github.com/otiai10/twistream"
 )
 
 type RememberMeHandler struct{}
@@ -25,9 +26,9 @@ func (h RememberMeHandler) Handle(tw twistream.Status, tl *twistream.Timeline) e
 	if err == nil {
 		txt := words.New("いや、もう知ってますよ...").Prepend("@" + tw.User.ScreenName).Join()
 		return tl.Tweet(twistream.Status{
-			Text: txt,
+			Text:                txt,
 			InReplyToScreenName: tw.User.ScreenName,
-			InReplyToStatusId: tw.Id,
+			InReplyToStatusId:   tw.Id,
 		})
 	}
 
@@ -38,8 +39,8 @@ func (h RememberMeHandler) Handle(tw twistream.Status, tl *twistream.Timeline) e
 
 	txt := words.New("よろしくおねがいしまーす！ 今日も1日がんばるぞい！").Prepend("@" + tw.User.ScreenName).Join()
 	return tl.Tweet(twistream.Status{
-		Text: txt,
+		Text:                txt,
 		InReplyToScreenName: tw.User.ScreenName,
-		InReplyToStatusId: tw.Id,
+		InReplyToStatusId:   tw.Id,
 	})
 }

@@ -1,7 +1,8 @@
 package handlers
+
 import (
-	"gopkg.in/mgo.v2"
 	"github.com/otiai10/hisyotan/config"
+	"gopkg.in/mgo.v2"
 )
 
 // まじでよくないので、filterとかやりたい

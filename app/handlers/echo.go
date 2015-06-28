@@ -2,9 +2,10 @@ package handlers
 
 import (
 	"log"
-	"github.com/otiai10/twistream"
-	"github.com/otiai10/hisyotan/config"
+
 	"github.com/otiai10/hisyotan/app/utils/words"
+	"github.com/otiai10/hisyotan/config"
+	"github.com/otiai10/twistream"
 )
 
 type EchoHandler struct{}
@@ -25,9 +26,9 @@ func (h EchoHandler) Handle(tw twistream.Status, tl *twistream.Timeline) error {
 		Append("って何？").
 		Join(" ")
 	err := tl.Tweet(twistream.Status{
-		Text: txt,
+		Text:                txt,
 		InReplyToScreenName: tw.User.ScreenName,
-		InReplyToStatusId: tw.Id,
+		InReplyToStatusId:   tw.Id,
 	})
 	log.Println(txt, err)
 	return err
