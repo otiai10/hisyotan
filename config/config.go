@@ -12,6 +12,7 @@ import (
 
 type Conf struct {
 	Twitter Twitter `toml:"twitter"`
+	MongoDB mongodb `toml:"mongodb"`
 }
 
 type Twitter struct {
@@ -28,6 +29,10 @@ type bot struct {
 	UserID            string `toml:"user_id"`
 	AccessToken       string `toml:"access_token"`
 	AccessTokenSecret string `toml:"access_token_secret"`
+}
+type mongodb struct {
+	Address string `toml:"address"`
+	Database string `toml:"database"`
 }
 
 var V = Conf{}
@@ -49,4 +54,13 @@ func loadAppConf() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+// ほんとはV全部隠そうね。
+func MongoURI() string {
+	return V.MongoDB.Address + "/" + V.MongoDB.Database
+}
+
+func MongoDatabaseName() string {
+	return V.MongoDB.Database
 }

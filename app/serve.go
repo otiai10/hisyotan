@@ -4,6 +4,8 @@ import (
 	"github.com/otiai10/hisyotan/app/routes"
 	"github.com/otiai10/twistream"
 	"log"
+	"gopkg.in/mgo.v2"
+	"github.com/otiai10/hisyotan/app/handlers"
 )
 
 func Serve() {
@@ -17,9 +19,19 @@ func Serve() {
 	)
 
 	if err != nil {
-		log.Fatalf("failed to init timeline")
+		log.Fatalf("failed to init timeline: %v", err)
 	}
 
+
 	routes.LoadHandlers()
+
+	// {{{ TODO: あとでなおす. filterとかでかっちょよくする
+	mongosession, err := mgo.Dial(config.MongoURI())
+	if err != nil {
+		log.Fatalf("failed to connect mongodb: %v", err)
+	}
+	handlers.MongoSession = mongosession
+	// }}}
+
 	routes.Listen(tl)
 }

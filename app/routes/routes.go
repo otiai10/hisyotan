@@ -37,6 +37,8 @@ func LoadHandlers() error {
 	}
 	*/
 	routes = []MatchHandler{
+		handlers.RememberMeHandler{},
+		handlers.HelloHandler{},
 		handlers.EchoHandler{},
 	}
 	return nil
