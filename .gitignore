@@ -1,6 +1,5 @@
 # config
-config/
-!*.gitkeep
+config/*.toml
 
 # editor
 *.iml
