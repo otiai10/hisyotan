@@ -1,16 +1,16 @@
 package handlers
 
 import (
-	"log"
-
 	"github.com/otiai10/hisyotan/app/models"
-	"github.com/otiai10/hisyotan/app/utils/words"
 	"github.com/otiai10/hisyotan/config"
 	"github.com/otiai10/twistream"
+	"github.com/otiai10/words"
 )
 
+// RememberMeHandler ...
 type RememberMeHandler struct{}
 
+// Match ...
 func (h RememberMeHandler) Match(tw twistream.Status) bool {
 	if tw.InReplyToUserIdStr != config.V.Twitter.Bot.UserID {
 		return false
@@ -18,15 +18,15 @@ func (h RememberMeHandler) Match(tw twistream.Status) bool {
 	return words.Parse(tw.Text).Has("/rememberme")
 }
 
+// Handle ...
 func (h RememberMeHandler) Handle(tw twistream.Status, tl *twistream.Timeline) error {
 
-	user, err := models.FindUserByIdStr(DB(), tw.User.IdStr)
-	log.Println(user, err)
-
+	user, err := models.FindUserByIDStr(DB(), tw.User.IdStr)
 	if err == nil {
-		txt := words.New("いや、もう知ってますよ...").Prepend("@" + tw.User.ScreenName).Join()
+		text := words.New("@" + user.ScreenName).
+			Add("すでにしってますしおすし").Join(" ")
 		return tl.Tweet(twistream.Status{
-			Text:                txt,
+			Text:                text,
 			InReplyToScreenName: tw.User.ScreenName,
 			InReplyToStatusId:   tw.Id,
 		})
@@ -37,9 +37,10 @@ func (h RememberMeHandler) Handle(tw twistream.Status, tl *twistream.Timeline) e
 		return err
 	}
 
-	txt := words.New("よろしくおねがいしまーす！ 今日も1日がんばるぞい！").Prepend("@" + tw.User.ScreenName).Join()
+	text := words.New("@"+tw.User.ScreenName, "おぼえましたし！").Join(" ")
+
 	return tl.Tweet(twistream.Status{
-		Text:                txt,
+		Text:                text,
 		InReplyToScreenName: tw.User.ScreenName,
 		InReplyToStatusId:   tw.Id,
 	})

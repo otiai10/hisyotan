@@ -2,13 +2,15 @@ package handlers
 
 import (
 	"github.com/otiai10/hisyotan/app/models"
-	"github.com/otiai10/hisyotan/app/utils/words"
 	"github.com/otiai10/hisyotan/config"
 	"github.com/otiai10/twistream"
+	"github.com/otiai10/words"
 )
 
+// DoneHandler ...
 type DoneHandler struct{}
 
+// Match ...
 func (h DoneHandler) Match(tw twistream.Status) bool {
 	if tw.InReplyToUserIdStr != config.V.Twitter.Bot.UserID {
 		return false
@@ -17,28 +19,30 @@ func (h DoneHandler) Match(tw twistream.Status) bool {
 	return (d.Has("/done") || d.Has("/d"))
 }
 
+// Handle ...
 func (h DoneHandler) Handle(tw twistream.Status, tl *twistream.Timeline) error {
 
 	botname := config.V.Twitter.Bot.ScreenName
 
-	user, err := models.FindUserByIdStr(DB(), tw.User.IdStr)
+	user, err := models.FindUserByIDStr(DB(), tw.User.IdStr)
 	if err != nil {
 		return err
 	}
 
-	d := words.Parse(tw.Text).Remove("@" + botname).Remove("/done", "/d")
+	user.Todos = words.New(user.Todos...).
+		Remove(words.Parse(tw.Text).List()...).
+		List()
 
-	newlist := words.New(user.TODOs...).Remove(d.Words...).Words
-	user.TODOs = newlist
+	if err := user.Update(DB()); err != nil {
+		return err
+	}
 
-	user.Update(DB())
+	text := words.Parse(tw.Text).Remove("@"+botname, "/done", "/d").
+		Prepend("@" + user.ScreenName).
+		Append("おつかれさま！").Join(" ")
 
-	txt := words.New(d.Words...).
-		Prepend("@" + tw.User.ScreenName).
-		Append("削除しました").
-		Join(" ")
 	return tl.Tweet(twistream.Status{
-		Text:                txt,
+		Text:                text,
 		InReplyToScreenName: tw.User.ScreenName,
 		InReplyToStatusId:   tw.Id,
 	})

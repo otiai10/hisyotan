@@ -1,15 +1,15 @@
 package handlers
 
 import (
-	"log"
-
-	"github.com/otiai10/hisyotan/app/utils/words"
 	"github.com/otiai10/hisyotan/config"
 	"github.com/otiai10/twistream"
+	"github.com/otiai10/words"
 )
 
+// EchoHandler ...
 type EchoHandler struct{}
 
+// Match ...
 func (h EchoHandler) Match(tw twistream.Status) bool {
 	if tw.InReplyToUserIdStr != config.V.Twitter.Bot.UserID {
 		return false
@@ -17,19 +17,17 @@ func (h EchoHandler) Match(tw twistream.Status) bool {
 	return words.Parse(tw.Text).Has("/echo")
 }
 
+// Handle ...
 func (h EchoHandler) Handle(tw twistream.Status, tl *twistream.Timeline) error {
 	botname := config.V.Twitter.Bot.ScreenName
-	txt := words.Parse(tw.Text).
-		Remove("@" + botname).
-		Remove("/echo").
-		Prepend("@" + tw.User.ScreenName).
-		Append("って何？").
-		Join(" ")
-	err := tl.Tweet(twistream.Status{
-		Text:                txt,
+
+	text := words.Parse(tw.Text).
+		Remove("@" + botname).Remove("/echo").
+		Prepend("@" + tw.User.ScreenName).Join(" ")
+
+	return tl.Tweet(twistream.Status{
+		Text:                text,
 		InReplyToScreenName: tw.User.ScreenName,
 		InReplyToStatusId:   tw.Id,
 	})
-	log.Println(txt, err)
-	return err
 }
