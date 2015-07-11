@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/otiai10/hisyotan/app/bot"
 	"github.com/otiai10/hisyotan/app/models"
 	"github.com/otiai10/hisyotan/config"
 	"github.com/otiai10/twistream"
@@ -25,6 +26,16 @@ func (h ListHandler) Handle(tw twistream.Status, tl *twistream.Timeline) error {
 	user, err := models.FindUserByIDStr(DB(), tw.User.IdStr)
 	if err != nil {
 		return err
+	}
+
+	if len(user.Todos) == 0 {
+		txt := words.New("@"+user.ScreenName).
+			Append("今なにもないでーす", bot.TS()).Join(" ")
+		return tl.Tweet(twistream.Status{
+			Text:                txt,
+			InReplyToScreenName: tw.User.ScreenName,
+			InReplyToStatusId:   tw.Id,
+		})
 	}
 
 	botname := config.V.Twitter.Bot.ScreenName
