@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/otiai10/hisyotan/app/bot"
+	"github.com/otiai10/hisyotan/app/message"
 	"github.com/otiai10/hisyotan/app/models"
 	"github.com/otiai10/hisyotan/config"
 	"github.com/otiai10/twistream"
@@ -30,7 +31,7 @@ func (h ListHandler) Handle(tw twistream.Status, tl *twistream.Timeline) error {
 
 	if len(user.Todos) == 0 {
 		txt := words.New("@"+user.ScreenName).
-			Append("今なにもないでーす", bot.TS()).Join(" ")
+			Append(message.Get("list.empty"), bot.TS()).Join(" ")
 		return tl.Tweet(twistream.Status{
 			Text:                txt,
 			InReplyToScreenName: tw.User.ScreenName,
