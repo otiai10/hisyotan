@@ -13,7 +13,7 @@ type EchoHandler struct {
 }
 
 // Match ...
-func (h EchoHandler) Match(tw twistream.Status) bool {
+func (h *EchoHandler) Match(tw twistream.Status) bool {
 	if tw.InReplyToUserIdStr != config.V.Twitter.Bot.UserID {
 		return false
 	}
@@ -21,7 +21,7 @@ func (h EchoHandler) Match(tw twistream.Status) bool {
 }
 
 // Handle ...
-func (h EchoHandler) Handle(tw twistream.Status, tl routes.Tweetable) error {
+func (h *EchoHandler) Handle(tw twistream.Status, tl routes.Tweetable) error {
 	botname := config.V.Twitter.Bot.ScreenName
 
 	text := words.Parse(tw.Text).

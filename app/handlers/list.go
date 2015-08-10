@@ -16,7 +16,7 @@ type ListHandler struct {
 }
 
 // Match ...
-func (h ListHandler) Match(tw twistream.Status) bool {
+func (h *ListHandler) Match(tw twistream.Status) bool {
 	if tw.InReplyToUserIdStr != config.V.Twitter.Bot.UserID {
 		return false
 	}
@@ -25,7 +25,7 @@ func (h ListHandler) Match(tw twistream.Status) bool {
 }
 
 // Handle ...
-func (h ListHandler) Handle(tw twistream.Status, tl routes.Tweetable) error {
+func (h *ListHandler) Handle(tw twistream.Status, tl routes.Tweetable) error {
 
 	user, err := models.FindUserByIDStr(h.DB, tw.User.IdStr)
 	if err != nil {

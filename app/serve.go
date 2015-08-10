@@ -27,12 +27,12 @@ func Serve() {
 	}
 
 	routes.LoadHandlers([]routes.MatchHandler{
-		handlers.DoneHandler{},
-		handlers.ListHandler{},
-		handlers.AddHandler{},
-		handlers.RememberMeHandler{},
-		handlers.HelloHandler{},
-		handlers.AddHandler{},
+		&handlers.DoneHandler{},
+		&handlers.ListHandler{},
+		&handlers.AddHandler{},
+		&handlers.RememberMeHandler{},
+		&handlers.HelloHandler{},
+		&handlers.AddHandler{},
 	})
 
 	// {{{ TODO: あとでなおす. filterとかでかっちょよくする

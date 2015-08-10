@@ -6,7 +6,7 @@ type HandlerBase struct {
 	DB *mgo.Database
 }
 
-func (h HandlerBase) SetDB(db *mgo.Database) {
+func (h *HandlerBase) SetDB(db *mgo.Database) {
 	h.DB = db
 }
 

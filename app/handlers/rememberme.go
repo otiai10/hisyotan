@@ -14,7 +14,7 @@ type RememberMeHandler struct {
 }
 
 // Match ...
-func (h RememberMeHandler) Match(tw twistream.Status) bool {
+func (h *RememberMeHandler) Match(tw twistream.Status) bool {
 	if tw.InReplyToUserIdStr != config.V.Twitter.Bot.UserID {
 		return false
 	}
@@ -22,7 +22,7 @@ func (h RememberMeHandler) Match(tw twistream.Status) bool {
 }
 
 // Handle ...
-func (h RememberMeHandler) Handle(tw twistream.Status, tl routes.Tweetable) error {
+func (h *RememberMeHandler) Handle(tw twistream.Status, tl routes.Tweetable) error {
 
 	user, err := models.FindUserByIDStr(h.DB, tw.User.IdStr)
 	if err == nil {

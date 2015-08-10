@@ -1,10 +1,13 @@
 package routes
 
 import (
+	"log"
+
 	"github.com/otiai10/hisyotan/app/models"
 	"github.com/otiai10/hisyotan/config"
 	"github.com/otiai10/twistream"
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 // MatchHandler ...
@@ -30,7 +33,7 @@ type DBSetter interface {
 }
 
 var (
-	handlers []MatchHandler
+	handlers *[]MatchHandler
 	onerror  chan error // TODO: これもあとでやろう
 )
 
@@ -48,17 +51,7 @@ func LoadHandlers(hs []MatchHandler) error {
 		fmt.Println(name, file)
 	}
 	*/
-	handlers = hs
-	/*
-		handlers = []MatchHandler{
-			handlers.DoneHandler{},
-			handlers.ListHandler{},
-			handlers.AddHandler{},
-			handlers.RememberMeHandler{},
-			handlers.HelloHandler{},
-			handlers.AddHandler{},
-		}
-	*/
+	handlers = &hs
 	return nil
 }
 
@@ -92,12 +85,17 @@ func Listen(timeline Timeline) {
 }
 
 func matchesAndHandles(tw twistream.Status, tl Timeline) error {
-	for _, h := range handlers {
+	for _, h := range *handlers {
 		if h.Match(tw) {
 			sess := models.Session()
 			defer sess.Close()
+			log.Println("ここか？？", config.V.MongoDB.Database)
+			users := []models.User{}
+			e := sess.DB("hisyotan-test").C("users").Find(bson.M{}).All(&users)
+			log.Println("うわーん", e)
 			h.SetDB(sess.DB(config.V.MongoDB.Database))
 			err := h.Handle(tw, tl)
+			log.Println("002", err)
 			return err
 		}
 	}

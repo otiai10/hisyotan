@@ -52,12 +52,12 @@ func setup() {
 func Test_Story(t *testing.T) {
 
 	routes.LoadHandlers([]routes.MatchHandler{
-		handlers.DoneHandler{},
-		handlers.ListHandler{},
-		handlers.AddHandler{},
-		handlers.RememberMeHandler{},
-		handlers.HelloHandler{},
-		handlers.AddHandler{},
+		&handlers.DoneHandler{},
+		&handlers.ListHandler{},
+		&handlers.AddHandler{},
+		&handlers.RememberMeHandler{},
+		&handlers.HelloHandler{},
+		&handlers.AddHandler{},
 	})
 
 	// {{{ TODO: あとでなおす. filterとかでかっちょよくする
@@ -76,5 +76,14 @@ func Test_Story(t *testing.T) {
 		routes.Listen(tl)
 	}()
 
-	tl.ch <- twistream.Status{Text: "/hello"}
+	tl.ch <- twistream.Status{
+		User: twistream.User{
+			IdStr:      "12345",
+			ScreenName: "otiai10",
+		},
+		InReplyToUserIdStr: config.V.Twitter.Bot.UserID,
+		Text:               "/hello",
+	}
+
+	log.Println(tl.tweets)
 }
