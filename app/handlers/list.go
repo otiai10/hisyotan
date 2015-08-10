@@ -4,13 +4,16 @@ import (
 	"github.com/otiai10/hisyotan/app/bot"
 	"github.com/otiai10/hisyotan/app/message"
 	"github.com/otiai10/hisyotan/app/models"
+	"github.com/otiai10/hisyotan/app/routes"
 	"github.com/otiai10/hisyotan/config"
 	"github.com/otiai10/twistream"
 	"github.com/otiai10/words"
 )
 
 // ListHandler ...
-type ListHandler struct{}
+type ListHandler struct {
+	HandlerBase
+}
 
 // Match ...
 func (h ListHandler) Match(tw twistream.Status) bool {
@@ -22,9 +25,9 @@ func (h ListHandler) Match(tw twistream.Status) bool {
 }
 
 // Handle ...
-func (h ListHandler) Handle(tw twistream.Status, tl *twistream.Timeline) error {
+func (h ListHandler) Handle(tw twistream.Status, tl routes.Tweetable) error {
 
-	user, err := models.FindUserByIDStr(DB(), tw.User.IdStr)
+	user, err := models.FindUserByIDStr(h.DB, tw.User.IdStr)
 	if err != nil {
 		return err
 	}

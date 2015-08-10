@@ -3,13 +3,16 @@ package handlers
 import (
 	"github.com/otiai10/hisyotan/app/bot"
 	"github.com/otiai10/hisyotan/app/models"
+	"github.com/otiai10/hisyotan/app/routes"
 	"github.com/otiai10/hisyotan/config"
 	"github.com/otiai10/twistream"
 	"github.com/otiai10/words"
 )
 
 // AddHandler TODOをaddするんだ
-type AddHandler struct{}
+type AddHandler struct {
+	HandlerBase
+}
 
 // Match ...
 func (h AddHandler) Match(tw twistream.Status) bool {
@@ -21,9 +24,9 @@ func (h AddHandler) Match(tw twistream.Status) bool {
 }
 
 // Handle ...
-func (h AddHandler) Handle(tw twistream.Status, tl *twistream.Timeline) error {
+func (h AddHandler) Handle(tw twistream.Status, tl routes.Tweetable) error {
 
-	user, err := models.FindUserByIDStr(DB(), tw.User.IdStr)
+	user, err := models.FindUserByIDStr(h.DB, tw.User.IdStr)
 	if err != nil {
 		return err
 	}
@@ -34,7 +37,7 @@ func (h AddHandler) Handle(tw twistream.Status, tl *twistream.Timeline) error {
 		Remove(commands...)
 
 	user.Todos = words.New(user.Todos...).Add(todos.List()...).List()
-	if err := user.Update(DB()); err != nil {
+	if err := user.Update(h.DB); err != nil {
 		return err
 	}
 

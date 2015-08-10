@@ -3,15 +3,18 @@ package handlers
 import (
 	"log"
 
+	"github.com/otiai10/hisyotan/app/routes"
 	"github.com/otiai10/twistream"
 	"github.com/otiai10/words"
 )
 
 // OnErrorHandler ...
-type OnErrorHandler struct{}
+type OnErrorHandler struct {
+	HandlerBase
+}
 
 // HandleError ...
-func (h OnErrorHandler) HandleError(err error, tw twistream.Status, tl *twistream.Timeline) error {
+func (h OnErrorHandler) HandleError(err error, tw twistream.Status, tl routes.Tweetable) error {
 	// botname := config.V.Twitter.Bot.ScreenName
 	log.Println(tw.Text, err.Error())
 	text := words.New("@otiai10", ">_<").

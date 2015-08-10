@@ -2,13 +2,16 @@ package handlers
 
 import (
 	"github.com/otiai10/hisyotan/app/models"
+	"github.com/otiai10/hisyotan/app/routes"
 	"github.com/otiai10/hisyotan/config"
 	"github.com/otiai10/twistream"
 	"github.com/otiai10/words"
 )
 
 // RememberMeHandler ...
-type RememberMeHandler struct{}
+type RememberMeHandler struct {
+	HandlerBase
+}
 
 // Match ...
 func (h RememberMeHandler) Match(tw twistream.Status) bool {
@@ -19,9 +22,9 @@ func (h RememberMeHandler) Match(tw twistream.Status) bool {
 }
 
 // Handle ...
-func (h RememberMeHandler) Handle(tw twistream.Status, tl *twistream.Timeline) error {
+func (h RememberMeHandler) Handle(tw twistream.Status, tl routes.Tweetable) error {
 
-	user, err := models.FindUserByIDStr(DB(), tw.User.IdStr)
+	user, err := models.FindUserByIDStr(h.DB, tw.User.IdStr)
 	if err == nil {
 		text := words.New("@" + user.ScreenName).
 			Add("すでにしってますしおすし").Join(" ")
@@ -32,7 +35,7 @@ func (h RememberMeHandler) Handle(tw twistream.Status, tl *twistream.Timeline) e
 		})
 	}
 
-	err = models.SaveNewUser(DB(), models.NewUserFromTwistreamStatus(tw))
+	err = models.SaveNewUser(h.DB, models.NewUserFromTwistreamStatus(tw))
 	if err != nil {
 		return err
 	}

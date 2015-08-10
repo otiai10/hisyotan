@@ -1,15 +1,13 @@
 package handlers
 
-import (
-	"github.com/otiai10/hisyotan/config"
-	"gopkg.in/mgo.v2"
-)
+import "gopkg.in/mgo.v2"
 
-// まじでよくないので、filterとかやりたい
-var MongoSession *mgo.Session
+type HandlerBase struct {
+	DB *mgo.Database
+}
 
-func DB() *mgo.Database {
-	return MongoSession.DB(config.MongoDatabaseName())
+func (h HandlerBase) SetDB(db *mgo.Database) {
+	h.DB = db
 }
 
 var commands = []string{

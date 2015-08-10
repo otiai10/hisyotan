@@ -1,13 +1,16 @@
 package handlers
 
 import (
+	"github.com/otiai10/hisyotan/app/routes"
 	"github.com/otiai10/hisyotan/config"
 	"github.com/otiai10/twistream"
 	"github.com/otiai10/words"
 )
 
 // EchoHandler ...
-type EchoHandler struct{}
+type EchoHandler struct {
+	HandlerBase
+}
 
 // Match ...
 func (h EchoHandler) Match(tw twistream.Status) bool {
@@ -18,7 +21,7 @@ func (h EchoHandler) Match(tw twistream.Status) bool {
 }
 
 // Handle ...
-func (h EchoHandler) Handle(tw twistream.Status, tl *twistream.Timeline) error {
+func (h EchoHandler) Handle(tw twistream.Status, tl routes.Tweetable) error {
 	botname := config.V.Twitter.Bot.ScreenName
 
 	text := words.Parse(tw.Text).

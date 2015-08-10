@@ -1,13 +1,17 @@
 package app
+
 import (
-	"github.com/otiai10/hisyotan/config"
-	"github.com/otiai10/hisyotan/app/routes"
-	"github.com/otiai10/twistream"
 	"log"
-	"gopkg.in/mgo.v2"
+
 	"github.com/otiai10/hisyotan/app/handlers"
+	"github.com/otiai10/hisyotan/app/models"
+	"github.com/otiai10/hisyotan/app/routes"
+	"github.com/otiai10/hisyotan/config"
+	"github.com/otiai10/twistream"
+	"gopkg.in/mgo.v2"
 )
 
+// Serve ...
 func Serve() {
 
 	tl, err := twistream.New(
@@ -22,15 +26,21 @@ func Serve() {
 		log.Fatalf("failed to init timeline: %v", err)
 	}
 
-
-	routes.LoadHandlers()
+	routes.LoadHandlers([]routes.MatchHandler{
+		handlers.DoneHandler{},
+		handlers.ListHandler{},
+		handlers.AddHandler{},
+		handlers.RememberMeHandler{},
+		handlers.HelloHandler{},
+		handlers.AddHandler{},
+	})
 
 	// {{{ TODO: あとでなおす. filterとかでかっちょよくする
 	mongosession, err := mgo.Dial(config.MongoURI())
 	if err != nil {
 		log.Fatalf("failed to connect mongodb: %v", err)
 	}
-	handlers.MongoSession = mongosession
+	models.SetRootSession(mongosession)
 	// }}}
 
 	routes.Listen(tl)

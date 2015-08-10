@@ -1,29 +1,41 @@
 package routes
 
 import (
-	"github.com/otiai10/hisyotan/app/handlers"
+	"github.com/otiai10/hisyotan/app/models"
+	"github.com/otiai10/hisyotan/config"
 	"github.com/otiai10/twistream"
+	"gopkg.in/mgo.v2"
 )
 
+// MatchHandler ...
 type MatchHandler interface {
 	Matcher
 	Handler
+	DBSetter
 }
 
+// Matcher ...
 type Matcher interface {
 	Match(twistream.Status) bool
 }
 
+// Handler ...
 type Handler interface {
-	Handle(twistream.Status, *twistream.Timeline) error
+	Handle(twistream.Status, Tweetable) error
+}
+
+// DBSetter ...
+type DBSetter interface {
+	SetDB(*mgo.Database)
 }
 
 var (
-	routes  []MatchHandler
-	onerror chan error // TODO: これもあとでやろう
+	handlers []MatchHandler
+	onerror  chan error // TODO: これもあとでやろう
 )
 
-func LoadHandlers() error {
+// LoadHandlers ...
+func LoadHandlers(hs []MatchHandler) error {
 	/* TODO: あとでやろう
 	hp := filepath.Join(filepath.Dir(curr.Dir()), "handlers")
 	pkgs, err := parser.ParseDir(token.NewFileSet(), hp, func(f os.FileInfo) bool {
@@ -36,34 +48,55 @@ func LoadHandlers() error {
 		fmt.Println(name, file)
 	}
 	*/
-	routes = []MatchHandler{
-		handlers.DoneHandler{},
-		handlers.ListHandler{},
-		handlers.AddHandler{},
-		handlers.RememberMeHandler{},
-		handlers.HelloHandler{},
-		handlers.AddHandler{},
-	}
+	handlers = hs
+	/*
+		handlers = []MatchHandler{
+			handlers.DoneHandler{},
+			handlers.ListHandler{},
+			handlers.AddHandler{},
+			handlers.RememberMeHandler{},
+			handlers.HelloHandler{},
+			handlers.AddHandler{},
+		}
+	*/
 	return nil
 }
 
-func Listen(timeline *twistream.Timeline) {
+// Timeline ...
+type Timeline interface {
+	Listen() <-chan twistream.Status
+	Tweetable
+}
+
+// Tweetable ...
+type Tweetable interface {
+	Tweet(twistream.Status) error
+}
+
+// Listen ...
+func Listen(timeline Timeline) {
 	ch := timeline.Listen()
 	for {
 		select {
 		case tw := <-ch:
 			err := matchesAndHandles(tw, timeline)
 			if err != nil {
-				h := handlers.OnErrorHandler{}
-				h.HandleError(err, tw, timeline)
+				// TODO: 要検討
+				/*
+					h := handlers.OnErrorHandler{}
+					h.HandleError(err, tw, timeline)
+				*/
 			}
 		}
 	}
 }
 
-func matchesAndHandles(tw twistream.Status, tl *twistream.Timeline) error {
-	for _, h := range routes {
+func matchesAndHandles(tw twistream.Status, tl Timeline) error {
+	for _, h := range handlers {
 		if h.Match(tw) {
+			sess := models.Session()
+			defer sess.Close()
+			h.SetDB(sess.DB(config.V.MongoDB.Database))
 			err := h.Handle(tw, tl)
 			return err
 		}
