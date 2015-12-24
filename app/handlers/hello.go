@@ -4,27 +4,39 @@ import (
 	"log"
 
 	"github.com/otiai10/hisyotan/app/models"
-	"github.com/otiai10/hisyotan/app/utils/words"
+	"github.com/otiai10/hisyotan/app/routes"
 	"github.com/otiai10/hisyotan/config"
 	"github.com/otiai10/twistream"
+	"github.com/otiai10/words"
 )
 
-type HelloHandler struct{}
+// HelloHandler ...
+type HelloHandler struct {
+	HandlerBase
+}
 
-func (h HelloHandler) Match(tw twistream.Status) bool {
+// Match ...
+func (h *HelloHandler) Match(tw twistream.Status) bool {
 	if tw.InReplyToUserIdStr != config.V.Twitter.Bot.UserID {
 		return false
 	}
+	log.Println("ここは？")
 	return words.Parse(tw.Text).Has("/hello")
 }
 
-func (h HelloHandler) Handle(tw twistream.Status, tl *twistream.Timeline) error {
+// Handle ...
+func (h *HelloHandler) Handle(tw twistream.Status, tl routes.Tweetable) error {
 
-	user, err := models.FindUserByIdStr(DB(), tw.User.IdStr)
-	log.Println(user, err)
+	log.Println("003", h.DB, tw.User.IdStr)
+	/*
+		user := new(models.User)
+		err := h.DB.C("users").Find(bson.M{"id_str": tw.User.IdStr}).One(user)
+	*/
+	_, err := models.FindUserByIDStr(h.DB, tw.User.IdStr)
+	log.Println("003", err)
 
 	if err == nil {
-		txt := words.New("hello! hello!").Prepend("@" + tw.User.ScreenName).Join()
+		txt := words.New("hello! hello!").Prepend("@" + tw.User.ScreenName).Join(" ")
 		return tl.Tweet(twistream.Status{
 			Text:                txt,
 			InReplyToScreenName: tw.User.ScreenName,
@@ -32,7 +44,7 @@ func (h HelloHandler) Handle(tw twistream.Status, tl *twistream.Timeline) error 
 		})
 	}
 
-	txt := words.New("誰すか？").Prepend("@" + tw.User.ScreenName).Join()
+	txt := words.New("誰すか？").Prepend("@" + tw.User.ScreenName).Join(" ")
 	return tl.Tweet(twistream.Status{
 		Text:                txt,
 		InReplyToScreenName: tw.User.ScreenName,

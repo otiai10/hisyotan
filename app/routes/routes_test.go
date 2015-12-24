@@ -8,5 +8,5 @@ import (
 
 func TestLoadHandlers(t *testing.T) {
 	Expect(t, true).ToBe(true)
-	LoadHandlers()
+	LoadHandlers([]MatchHandler{})
 }

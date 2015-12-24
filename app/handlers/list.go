@@ -1,15 +1,22 @@
 package handlers
 
 import (
+	"github.com/otiai10/hisyotan/app/bot"
+	"github.com/otiai10/hisyotan/app/message"
 	"github.com/otiai10/hisyotan/app/models"
-	"github.com/otiai10/hisyotan/app/utils/words"
+	"github.com/otiai10/hisyotan/app/routes"
 	"github.com/otiai10/hisyotan/config"
 	"github.com/otiai10/twistream"
+	"github.com/otiai10/words"
 )
 
-type ListHandler struct{}
+// ListHandler ...
+type ListHandler struct {
+	HandlerBase
+}
 
-func (h ListHandler) Match(tw twistream.Status) bool {
+// Match ...
+func (h *ListHandler) Match(tw twistream.Status) bool {
 	if tw.InReplyToUserIdStr != config.V.Twitter.Bot.UserID {
 		return false
 	}
@@ -17,15 +24,26 @@ func (h ListHandler) Match(tw twistream.Status) bool {
 	return (d.Has("/list") || d.Has("/l"))
 }
 
-func (h ListHandler) Handle(tw twistream.Status, tl *twistream.Timeline) error {
+// Handle ...
+func (h *ListHandler) Handle(tw twistream.Status, tl routes.Tweetable) error {
 
-	user, err := models.FindUserByIdStr(DB(), tw.User.IdStr)
+	user, err := models.FindUserByIDStr(h.DB, tw.User.IdStr)
 	if err != nil {
 		return err
 	}
 
+	if len(user.Todos) == 0 {
+		txt := words.New("@"+user.ScreenName).
+			Append(message.Get("list.empty"), bot.TS()).Join(" ")
+		return tl.Tweet(twistream.Status{
+			Text:                txt,
+			InReplyToScreenName: tw.User.ScreenName,
+			InReplyToStatusId:   tw.Id,
+		})
+	}
+
 	botname := config.V.Twitter.Bot.ScreenName
-	txt := words.New(user.TODOs...).
+	txt := words.New(user.Todos...).
 		Remove("@"+botname).Remove("/add", "/a").
 		Prepend("@" + tw.User.ScreenName).
 		Append("いちらんです").

@@ -1,15 +1,21 @@
 package handlers
 
 import (
+	"github.com/otiai10/hisyotan/app/bot"
 	"github.com/otiai10/hisyotan/app/models"
-	"github.com/otiai10/hisyotan/app/utils/words"
+	"github.com/otiai10/hisyotan/app/routes"
 	"github.com/otiai10/hisyotan/config"
 	"github.com/otiai10/twistream"
+	"github.com/otiai10/words"
 )
 
-type AddHandler struct{}
+// AddHandler TODOをaddするんだ
+type AddHandler struct {
+	HandlerBase
+}
 
-func (h AddHandler) Match(tw twistream.Status) bool {
+// Match ...
+func (h *AddHandler) Match(tw twistream.Status) bool {
 	if tw.InReplyToUserIdStr != config.V.Twitter.Bot.UserID {
 		return false
 	}
@@ -17,27 +23,31 @@ func (h AddHandler) Match(tw twistream.Status) bool {
 	return (d.Has("/add") || d.Has("/a"))
 }
 
-func (h AddHandler) Handle(tw twistream.Status, tl *twistream.Timeline) error {
+// Handle ...
+func (h *AddHandler) Handle(tw twistream.Status, tl routes.Tweetable) error {
 
-	botname := config.V.Twitter.Bot.ScreenName
-
-	user, err := models.FindUserByIdStr(DB(), tw.User.IdStr)
+	user, err := models.FindUserByIDStr(h.DB, tw.User.IdStr)
 	if err != nil {
 		return err
 	}
 
-	d := words.Parse(tw.Text).Remove("@" + botname).Remove("/add", "/a")
+	todos := words.Parse(tw.Text).
+		Remove(bot.ScreenName("@")).
+		Remove("@" + user.ScreenName).
+		Remove(commands...)
 
-	user.TODOs = append(user.TODOs, d.Words...)
+	user.Todos = words.New(user.Todos...).Add(todos.List()...).List()
+	if err := user.Update(h.DB); err != nil {
+		return err
+	}
 
-	user.Update(DB())
-
-	txt := words.New(d.Words...).
-		Prepend("@" + tw.User.ScreenName).
-		Append("追加しました").
+	text := words.New(todos.List()...).
+		Prepend("@" + user.ScreenName).
+		Add("追加しました！").
 		Join(" ")
+
 	return tl.Tweet(twistream.Status{
-		Text:                txt,
+		Text:                text,
 		InReplyToScreenName: tw.User.ScreenName,
 		InReplyToStatusId:   tw.Id,
 	})

@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"os"
 	"path"
 
 	"github.com/BurntSushi/toml"
@@ -31,18 +30,15 @@ type bot struct {
 	AccessTokenSecret string `toml:"access_token_secret"`
 }
 type mongodb struct {
-	Address string `toml:"address"`
+	Address  string `toml:"address"`
 	Database string `toml:"database"`
 }
 
+// V ...
 var V = Conf{}
 
-func init() {
-	loadAppConf()
-}
-
-func loadAppConf() {
-	env := os.Getenv("hisyotan_env")
+// Init ...
+func Init(env string) {
 	confpath := path.Join(
 		curr.Dir(),
 		fmt.Sprintf(
