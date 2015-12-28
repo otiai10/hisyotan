@@ -10,14 +10,13 @@ end
 
 conf = YAML.load_file('config.yml')
 
-TweetStream.configure do |config|
-  config.consumer_key       = conf["twitter"]["consumer"]["key"]
-  config.consumer_secret    = conf["twitter"]["consumer"]["secret"]
-  config.oauth_token        = conf["twitter"]["account"]["token"]
-  config.oauth_token_secret = conf["twitter"]["account"]["token_secret"]
-  config.auth_method        = :oauth
-end
-stream = TweetStream::Client.new
+stream = TweetStream::Client.new({
+  consumer_key:       conf["twitter"]["consumer"]["key"],
+  consumer_secret:    conf["twitter"]["consumer"]["secret"],
+  oauth_token:        conf["twitter"]["account"]["token"],
+  oauth_token_secret: conf["twitter"]["account"]["token_secret"],
+  auth_method:        :oauth
+})
 
 api = Twitter::REST::Client.new do |config|
   config.consumer_key        = conf["twitter"]["consumer"]["key"]
