@@ -3,8 +3,7 @@ require 'twitter'
 require 'tweetstream'
 require 'yaml'
 
-require './app/router'
-Dir['./app/controllers/*.rb'].each do |file|
+Dir['./bot/**/*.rb'].each do |file|
   require file
 end
 
@@ -25,8 +24,8 @@ api = Twitter::REST::Client.new do |config|
   config.access_token_secret = conf["twitter"]["account"]["token_secret"]
 end
 
-router = Router.new(stream, api)
+router = BOT::Router.new(stream, api)
 router.reject(lambda{|status| status.user.screen_name == "hisyotan"})
 router.reject(lambda{|status| status.retweeted_status? })
-router.add(EchoController.new)
+router.add(BOT::EchoController.new)
 router.listen("userstream")
