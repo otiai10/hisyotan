@@ -1,0 +1,5 @@
+hisyotan:
+  build: .
+  dockerfile: Dockerfile
+  volumes:
+    - .:/workspace/hisyotan
