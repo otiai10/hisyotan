@@ -6,8 +6,9 @@ require 'pp'
 
 require 'yaml'
 
+require './bot/controllers/base.rb'
 Dir['./bot/**/*.rb'].each do |file|
-  require file
+  load file
 end
 
 conf = YAML.load_file('config.yml')
@@ -38,4 +39,7 @@ router.reject(lambda{|status| status.retweeted_status? })
 router.add(BOT::RememberMeController.new)
 router.add(BOT::GoodbyeController.new)
 router.add(BOT::EchoController.new)
+router.add(BOT::AddController.new)
+router.add(BOT::ListController.new)
+router.add(BOT::DoneController.new)
 router.listen("userstream")

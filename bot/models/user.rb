@@ -6,6 +6,8 @@ module Models
 
     set_collection_name 'users'
 
+    many :task
+
     key :id_original, Bignum
     key :id_str,      String
     key :name,        String

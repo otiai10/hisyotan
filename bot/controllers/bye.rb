@@ -5,14 +5,11 @@ module BOT
     def initialize
       super Regexp.new("@hisyotan -goodbye[ 　]*")
     end
-    def handle(status, api)
+    def handle(status)
       user = Models::User.where(:id_original => status.user.id).first
-      if user.nil?
-        self.reply(status, "誰すか？")
-      else
-        user.delete
-        self.reply(status, "さよならはさみしいです...")
-      end
+      return self.reply(status, "誰すか？") if user.nil?
+      user.delete
+      self.reply(status, "さよならはさみしいです...")
     end
   end
 end
