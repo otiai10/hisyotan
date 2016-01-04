@@ -9,7 +9,7 @@ module BOT
       user = Models::User.where(:id_original => status.user.id).first
       return self.reply(status, "だれやねん") if user.nil?
       value = @pattern.match(status.text)["value"]
-      self.reply(status, value)
+      self.reply(status, BOT.message("echo", v: value))
     end
   end
 end
