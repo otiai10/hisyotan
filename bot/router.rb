@@ -45,6 +45,7 @@ module BOT
     def let_handle(status)
       @controllers.each do |controller|
         if controller.match status
+          controller.api = @api
           controller.handle(status, @api)
           next
         end

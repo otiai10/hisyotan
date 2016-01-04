@@ -8,10 +8,10 @@ module BOT
     def handle(status, api)
       user = Models::User.where(:id_original => status.user.id).first
       if user.nil?
-        api.update("@#{status.user.screen_name} 誰すか？", in_reply_to_status_id: status.id)
+        self.reply(status, "誰すか？")
       else
-        api.update("@#{user.screen_name} さよならはさみしいです...", in_reply_to_status_id: status.id)
         user.delete
+        self.reply(status, "さよならはさみしいです...")
       end
     end
   end
