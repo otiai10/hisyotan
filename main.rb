@@ -14,7 +14,8 @@ end
 conf = YAML.load_file('config.yml')
 
 # {{{ TODO: use config
-MongoMapper.connection = Mongo::Connection.new('localhost', 27017)
+# ↓どういう理屈かしらんけどhostnameがdocker-composeのservice name
+MongoMapper.connection = Mongo::Connection.new('mongodb', 27017)
 MongoMapper.database = 'hisyotan-dev'
 # }}}
 

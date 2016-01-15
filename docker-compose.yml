@@ -1,5 +1,11 @@
+mongodb:
+  container_name: mongodb
+  image: mongo:3.2.0
+  ports:
+    - "27017:27017"
 hisyotan:
+  container_name: hisyotan
   build: .
   dockerfile: Dockerfile
-  volumes:
-    - .:/workspace/hisyotan
+  links:
+    - mongodb
