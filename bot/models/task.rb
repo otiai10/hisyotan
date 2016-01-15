@@ -1,14 +1,11 @@
-module Models
-  class Task
-    include MongoMapper::Document
+class Task
+  include MongoMapper::Document
 
-    set_collection_name 'tasks'
+  set_collection_name 'tasks'
 
-    belongs_to :user
+  belongs_to :user
 
-    key :user_id, Bignum
-    key :title,   String
-
-  end
+  key :user_id, Bignum
+  key :title,   String
 
 end

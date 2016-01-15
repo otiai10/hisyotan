@@ -6,7 +6,7 @@ module BOT
     def handle(status)
       values = @pattern.match(status.text)["values"].split(Regexp.new("[ 　]+"))
       values.each do |value|
-        task = Models::Task.where(:user_id => status.user.id, :title => value).first
+        task = Task.where(:user_id => status.user.id, :title => value).first
         task.delete unless task.nil?
       end
       self.reply(status, "Done: #{values.to_s}")

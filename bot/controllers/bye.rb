@@ -6,7 +6,7 @@ module BOT
       super Regexp.new("@hisyotan -goodbye[ 　]*")
     end
     def handle(status)
-      user = Models::User.where(:id_original => status.user.id).first
+      user = User.where(:id_original => status.user.id).first
       return self.reply(status, "誰すか？") if user.nil?
       user.delete
       self.reply(status, "さよならはさみしいです...")
