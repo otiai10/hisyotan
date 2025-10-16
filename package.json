@@ -1,0 +1,29 @@
+{
+  "name": "hisyotan",
+  "version": "0.1.0",
+  "description": "やさしいTODO管理 - Electronデスクトップアプリ向けモノレポ",
+  "main": "desktop/dist/main/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "electron": "^32.3.3",
+    "electron-vite": "^2.2.0",
+    "typescript": "^5.6.2",
+    "vite": "^5.4.8"
+  }
+}
