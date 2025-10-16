@@ -29,11 +29,12 @@ function createMainWindow(): void {
     process.env.VITE_DEV_SERVER_URL;
 
   if (devServerUrl) {
-    console.log('[main] load renderer from dev server:', devServerUrl);
-    window.loadURL(devServerUrl);
-  } else {
-    window.loadFile(join(__dirname, '../renderer/index.html'));
+    console.info('[main] load renderer from dev server:', devServerUrl);
+    void window.loadURL(devServerUrl);
+    return;
   }
+
+  void window.loadFile(join(__dirname, '../renderer/index.html'));
 }
 
 app.on('window-all-closed', () => {
@@ -48,7 +49,7 @@ app.on('activate', () => {
   }
 });
 
-app.whenReady().then(() => {
+void app.whenReady().then(() => {
   createMainWindow();
 
   ipcMain.handle('desktop:open-external', async (_event, url: string) => {

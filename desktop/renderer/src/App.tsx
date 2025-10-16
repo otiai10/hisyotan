@@ -26,9 +26,9 @@ function App(): JSX.Element {
         </ul>
         <button
           type="button"
-          onClick={() =>
-            window.desktop.openExternal('https://www.electronjs.org/')
-          }
+          onClick={() => {
+            void window.desktop.openExternal('https://www.electronjs.org/');
+          }}
         >
           Electron 公式サイトを開く
         </button>

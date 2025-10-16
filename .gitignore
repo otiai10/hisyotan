@@ -4,4 +4,6 @@ yarn.lock
 desktop/dist/
 desktop/renderer/dist/
 .pnpm-store/
+tsconfig.node.tsbuildinfo
+tsconfig.web.tsbuildinfo
 *.log
