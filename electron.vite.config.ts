@@ -32,7 +32,7 @@ export default defineConfig({
       },
     },
     build: {
-      outDir: '../dist/renderer',
+      outDir: resolve(__dirname, 'desktop/dist/renderer'),
       rollupOptions: {
         input: resolve(__dirname, 'desktop/renderer/index.html'),
       },

@@ -14,11 +14,16 @@
 
 1. 依存パッケージをインストールする。
    ```bash
-   npm install
+   pnpm install
    ```
 2. Electron + Vite の開発サーバーを起動する。
    ```bash
-   npm run dev
+   pnpm run dev
+   ```
+3. 型チェックと Lint を行う。
+   ```bash
+   pnpm typecheck
+   pnpm lint
    ```
 
 `package.json` はリポジトリ直下で管理し、アプリ本体・ビルド生成物は `desktop/` 配下に集約する方針。ビルド成果物は `desktop/dist/` 以下に生成される。
