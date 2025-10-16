@@ -3,4 +3,5 @@ package-lock.json
 yarn.lock
 desktop/dist/
 desktop/renderer/dist/
+.pnpm-store/
 *.log
