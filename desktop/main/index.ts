@@ -1,5 +1,6 @@
-import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import { join } from 'node:path';
+
+import { app, BrowserWindow, ipcMain, shell } from 'electron';
 
 const isMac = process.platform === 'darwin';
 
